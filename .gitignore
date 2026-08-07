@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.py-embed/
+.env
+*.db
+*.zip
+*.tar.gz
+*.log
+.vscode/
+.idea/
