@@ -1,12 +1,15 @@
-"""Data ingestion and query routes."""
+"""Data ingestion and dashboard endpoints."""
 import os
 import shutil
 import tempfile
+from datetime import datetime, timedelta
+from typing import Optional
+
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, distinct
+from sqlalchemy import select, func, distinct, case
 from app.database import get_db
-from app.models import CanonicalBomHeader, CanonicalBomItem, OrderChain, Decision
+from app.models import CanonicalBomHeader, CanonicalBomItem, OrderChain, Decision, CanonicalMaterial, AuditLog
 from app.schemas import IngestResponse, DashboardStats, MaterialSummary
 from app.connectors.excel_connector import (
     ingest_production_order_bom,
@@ -15,6 +18,7 @@ from app.connectors.excel_connector import (
     ingest_order_linkage,
 )
 from app.connectors.demo_data_generator import generate_demo_workbooks
+from app.connectors.master_data_generator import generate_master_data
 from app.dependencies import require_page_access, get_current_user, CurrentUser
 
 router = APIRouter(prefix="/api/data", tags=["Data"])
@@ -154,6 +158,106 @@ async def generate_and_ingest_demo_data(
         results.append({"file": os.path.basename(paths[key]), **result})
 
     return {"results": results}
+
+
+@router.post("/generate-master-data")
+async def generate_master_data_endpoint(
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_page_access("/data")),
+):
+    """
+    Derive Phase 1 master data — material master, production versions, recipes,
+    operations, goods movements, confirmations and rework links — from whatever
+    BOM data is already ingested.
+
+    The client has delivered final transactional BOM mock data but not these
+    master-data objects, and the Production Persona cannot compute cost or
+    reprocess cycles without them. Generation is seeded from the material
+    number so results are identical on every run.
+    """
+    counts = await generate_master_data(db)
+    return {"status": "success", "created": counts}
+
+
+@router.get("/dashboard/freshness")
+async def freshness_report(
+    plant: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Report on data freshness by object type and plant.
+    
+    Returns counts of headers by age bucket (fresh <30d, stale 30-90d, very stale >90d)
+    to help planners understand data currency and re-ingest needs.
+    """
+    now = datetime.utcnow()
+    fresh_30d = now - timedelta(days=30)
+    fresh_90d = now - timedelta(days=90)
+
+    stmt = select(
+        CanonicalBomHeader.object_type,
+        func.count().label("total"),
+        func.sum(
+            case(
+                (CanonicalBomHeader.last_change_datetime >= fresh_30d, 1),
+                else_=0,
+            )
+        ).label("fresh_30d"),
+        func.sum(
+            case(
+                (
+                    (CanonicalBomHeader.last_change_datetime >= fresh_90d)
+                    & (CanonicalBomHeader.last_change_datetime < fresh_30d),
+                    1,
+                ),
+                else_=0,
+            )
+        ).label("stale_30_90d"),
+        func.sum(
+            case(
+                (CanonicalBomHeader.last_change_datetime < fresh_90d, 1),
+                else_=0,
+            )
+        ).label("very_stale_90d"),
+    )
+
+    if plant:
+        stmt = stmt.where(CanonicalBomHeader.plant == plant)
+
+    stmt = stmt.group_by(CanonicalBomHeader.object_type)
+    result = await db.execute(stmt)
+
+    freshness_data = []
+    for row in result.all():
+        object_type, total, fresh_30d_count, stale_30_90d_count, very_stale_90d_count = row
+        total = total or 0
+        fresh_30d_count = fresh_30d_count or 0
+        stale_30_90d_count = stale_30_90d_count or 0
+        very_stale_90d_count = very_stale_90d_count or 0
+
+        freshness_data.append(
+            {
+                "object_type": object_type,
+                "total": total,
+                "fresh_30d": fresh_30d_count,
+                "stale_30_90d": stale_30_90d_count,
+                "very_stale_90d": very_stale_90d_count,
+                "stale_pct": round(100 * (stale_30_90d_count + very_stale_90d_count) / total, 1)
+                if total > 0
+                else 0,
+                "recommendation": (
+                    "Re-ingest recommended" if (stale_30_90d_count + very_stale_90d_count) / total > 0.5
+                    else "Data fresh"
+                )
+                if total > 0
+                else "No data",
+            }
+        )
+
+    return {
+        "plant": plant or "all",
+        "as_of": now.isoformat(),
+        "freshness_by_type": freshness_data,
+    }
 
 
 @router.get("/stats", response_model=DashboardStats)

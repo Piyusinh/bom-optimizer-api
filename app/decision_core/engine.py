@@ -8,19 +8,21 @@ from app.models import CanonicalBomItem, Decision
 from app.schemas import (
     AnalyzeBomRequest,
     AnalyzeBomResponse,
-    CandidateResponse,
-    ComponentScore,
 )
 from app.decision_core.explosion_engine import explode_bom
-from app.decision_core.constraint_engine import evaluate_constraints
-from app.decision_core.scoring_engine import score_candidate
+from app.decision_core.candidate_engine import build_candidate
+from app.decision_core.ranking_engine import rank_candidates
 
 
-class DecisionEngine:
+class BomAnalysisAndDecisionEngine:
     """
-    The Decision Core — deterministic computation.
-    AI does not compute; it asks the Decision Core.
+    BOM Analysis & Decision Engine.
+    Orchestrates explosion, rules, candidate generation, and ranking.
+    AI does not compute; it asks the deterministic decision core.
     """
+
+    # Backwards-compatible alias
+    DecisionEngine = None
 
     async def analyze(
         self, request: AnalyzeBomRequest, db: AsyncSession
@@ -66,56 +68,21 @@ class DecisionEngine:
         result = await db.execute(all_components_stmt)
         known_components = {row[0] for row in result.all()}
 
-        # Step 3: Evaluate constraints & score each candidate
-        scored_candidates: list[CandidateResponse] = []
-        for idx, cand in enumerate(raw_candidates):
-            # Constraint evaluation
-            feasible, violations = evaluate_constraints(
-                cand["components"], request.constraints, known_components
+        # Step 3: Build candidates using the Candidate Generation Engine
+        scored_candidates = [
+            build_candidate(
+                idx,
+                cand,
+                request.constraints,
+                known_components,
+                request.scoring_profile,
+                total_runs,
             )
+            for idx, cand in enumerate(raw_candidates)
+        ]
 
-            # Historical frequency: how often this EXACT combination recurred
-            # across all historical runs for this material+plant.
-            occurrence_count = cand["occurrence_count"]
-            historical_freq = occurrence_count / total_runs if total_runs > 0 else 0.5
-
-            # Scoring
-            scores = score_candidate(
-                cand["components"], request.scoring_profile, historical_freq
-            )
-
-            candidate_id = f"cand-{idx+1:03d}"
-            source_orders = cand.get("source_orders", [])
-            scored_candidates.append(
-                CandidateResponse(
-                    id=candidate_id,
-                    source_order=source_orders[0] if source_orders else None,
-                    source_orders=source_orders,
-                    occurrence_count=occurrence_count,
-                    source_type=cand["object_type"],
-                    components=[
-                        ComponentScore(
-                            material=c["component"],
-                            quantity=c["quantity"],
-                            unit=c["unit"],
-                            scrap_percent=c["scrap_percent"],
-                        )
-                        for c in cand["components"]
-                    ],
-                    feasible=feasible,
-                    violations=violations,
-                    scores=scores,
-                    total_score=scores["total"],
-                    rank=0,  # Will be set after sorting
-                )
-            )
-
-        # Step 4: Rank — feasible first, then by total score descending
-        scored_candidates.sort(
-            key=lambda c: (not c.feasible, -c.total_score)
-        )
-        for rank, cand in enumerate(scored_candidates, 1):
-            cand.rank = rank
+        # Step 4: Rank using the Ranking / Optimization Engine
+        rank_candidates(scored_candidates)
 
         # Step 5: Persist decision
         recommended_id = scored_candidates[0].id if scored_candidates else None
