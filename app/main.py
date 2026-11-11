@@ -184,10 +184,19 @@ async def health():
 
 
 # Serve the built JS/CSS assets from the Vite output
-app.mount("/assets", StaticFiles(directory=os.path.join(UI_DIR, "assets")), name="assets")
+# The built UI is not stored in git, so on a fresh clone this folder does not exist.
+# Mount it only when present; the API must still start (run the UI with `npm run dev`).
+if os.path.isdir(os.path.join(UI_DIR, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(UI_DIR, "assets")), name="assets")
 
 
 def _index_response() -> FileResponse:
+    if not os.path.isfile(os.path.join(UI_DIR, "index.html")):
+        from fastapi import HTTPException
+        raise HTTPException(
+            status_code=404,
+            detail="UI bundle not found in api/ui. Run the UI separately (cd ui && npm run dev) or copy ui/dist to api/ui.",
+        )
     # index.html references content-hashed JS/CSS bundles (e.g. index-XXXX.js).
     # Every rebuild produces new hashes and deletes the old files, so index.html
     # must NEVER be cached by the browser — otherwise a stale cached HTML page
@@ -201,7 +210,11 @@ def _index_response() -> FileResponse:
 
 @app.get("/vite.svg", include_in_schema=False)
 async def vite_svg():
-    return FileResponse(os.path.join(UI_DIR, "vite.svg"))
+    path = os.path.join(UI_DIR, "vite.svg")
+    if not os.path.isfile(path):
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Not found")
+    return FileResponse(path)
 
 
 @app.get("/", include_in_schema=False)

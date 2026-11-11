@@ -1,0 +1,11 @@
+.venv/
+.py-embed/
+__pycache__/
+*.pyc
+*.db
+.env
+.git/
+deploy-api.zip
+scripts/
+*.log
+.pytest_cache/
