@@ -1,0 +1,1209 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BOM Data Summary</title><style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1b2430;--muted:#5d6878;--line:#dfe3ea;--accent:#2457d6;--accent2:#e8eefc;
+--ok:#12805c;--okbg:#e3f5ec;--warn:#9a5b06;--warnbg:#fdf1dc;--bad:#b42318;--badbg:#fde8e6;--code:#f0f2f6;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--card:#1a2028;--ink:#e8ecf2;--muted:#a3adbd;
+--line:#2b3340;--accent:#7ea5ff;--accent2:#1c2a4a;--ok:#4cc79a;--okbg:#143428;--warn:#f0b35a;--warnbg:#3a2a10;--bad:#ff8a80;--badbg:#3c1816;--code:#10141a;}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:18px 16px 70px}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
+header.top .in{max-width:1040px;margin:0 auto;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+header.top b{font-size:15px}
+nav a{color:var(--muted);text-decoration:none;font-size:13px;margin-right:12px;white-space:nowrap}nav a:hover{color:var(--accent)}
+section.page{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin:18px 0}
+h1{font-size:26px;margin:4px 0 6px}h2{font-size:21px;margin:0 0 4px}h3{font-size:16px;margin:20px 0 6px}
+.lead{color:var(--muted);margin:0 0 14px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
+th{text-align:left;color:var(--muted);font-weight:600;padding:7px 9px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+code{background:var(--code);padding:1px 6px;border-radius:5px;font-size:12.5px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:9px;padding:12px 14px;overflow:auto;font:12.5px/1.5 ui-monospace,Consolas,monospace;margin:8px 0}
+.pill{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600;margin-right:4px}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.warn{background:var(--warnbg);color:var(--warn)}
+.pill.bad{background:var(--badbg);color:var(--bad)}.pill.info{background:var(--accent2);color:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+.box{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg)}
+.box h4{margin:0 0 4px;font-size:14px}.box p{margin:0;font-size:13.5px;color:var(--muted)}
+dl.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:10px 0}dl.kv dt{color:var(--muted);font-size:13px}dl.kv dd{margin:0}
+.callout{border-left:4px solid var(--warn);background:var(--warnbg);border-radius:6px;padding:9px 13px;margin:12px 0;font-size:14px}
+.callout.ok{border-color:var(--ok);background:var(--okbg)}
+button.copy{float:right;font:12px system-ui;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:2px 9px;cursor:pointer}
+ul.tight{margin:6px 0 6px 18px;padding:0}ul.tight li{margin:3px 0}
+.k{color:var(--muted);font-size:12.5px}
+@media print{header.top{display:none}body{background:#fff;color:#000;font-size:11pt}section.page{border:0;padding:0;margin:0;page-break-before:always}
+section.page:first-of-type{page-break-before:auto}pre{white-space:pre-wrap;border:1px solid #bbb}button.copy{display:none}:root{--card:#fff;--code:#f4f4f4;--line:#ccc;--ink:#000;--muted:#444}}
+</style></head><body><header class="top"><div class="in"><b>BOM Data Summary</b><nav><a href="#overview">Overview</a><a href="#docs">Documents</a><a href="#sources">Where written</a><a href="#database">Database</a><a href="#perspective">API &amp; UI</a><a href="#findings">Findings</a><a href="#tables">Tables</a><a href="#alldll">Full DDL</a></nav></div></header><div class="wrap">
+<section class="page" id="overview">
+  <h1>BOM Paint Data — Summary</h1>
+  <p class="lead">What we have, what each document says, where the database lives, and every table with its exact DDL. Generated 07 Nov 2026 from the live database.</p>
+  <div class="grid3">
+    <div class="box"><h4>19 tables · 226 columns</h4><p>All created on the local PostgreSQL. Seven carry real data.</p></div>
+    <div class="box"><h4>1,675,192 rows of real data</h4><p>1,294,300 rework lines, 327,980 statuses, 26,456 orders.</p></div>
+    <div class="box"><h4>Totals match the client</h4><p>Our summary equals the client's Cost Report on all 26,456 orders.</p></div>
+  </div>
+  <h3>The whole thing in one minute</h3>
+  <ul class="tight">
+    <li><b>The goal:</b> load SAP data into a database so a model can later pick the best BOM / recipe per product, looking at cost and rework.</li>
+    <li><b>Two kinds of data exist.</b>
+      <ul class="tight"><li><b>Stream A — paint order cost &amp; rework:</b> the client already ran four SQL queries on SAP and gave us the results as Excel files. We have this now and it is loaded.</li>
+      <li><b>Stream B — BOM, recipe, production version, master data:</b> only a <i>design</i> exists (the FDS, plus a field list). A SAP BTP app is supposed to pull it through standard SAP OData APIs. No data has arrived yet, so those tables are created but empty.</li></ul></li>
+    <li><b>How data gets in today:</b> UI upload (or copy a file into a folder) → background worker cleans it → bulk-loads into PostgreSQL → rebuilds the summary → moves the file to <code>processed</code>.</li>
+  </ul>
+  <div class="callout ok"><b>Confirmed from the documents:</b> all column names in Part A (client's files + SQL doc) and all 52 field names in Part B1 (FDS, compared automatically).
+  <b>Not confirmed:</b> column <i>types and lengths</i> in Part B (no document gives them) and the whole of Part B2 (draft).</div>
+  <h3>Contents</h3>
+  <ul class="tight"><li><a href="#docs">1. The documents, explained simply</a></li><li><a href="#sources">2. "Where is it written?" — topic → document map</a></li>
+  <li><a href="#database">3. Where the database is on your machine</a></li><li><a href="#perspective">4. Tables from the API and UI point of view</a></li>
+  <li><a href="#findings">5. Findings and open questions</a></li><li><a href="#tables">6. One page per table (with DDL)</a></li><li><a href="#alldll">7. Complete DDL</a></li></ul>
+</section>
+<section class="page" id="docs">
+  <h2>1. The documents, explained simply</h2><p class="lead">Every file you shared, what is inside, and whether I actually read it.</p>
+  <div class="tw"><table><thead><tr><th>File</th><th>What it contains</th><th>What it is good for</th><th>Read?</th></tr></thead><tbody><tr><td><b>Chat thread you pasted</b><div class="k">Messages between the team</div></td><td>Piyush asks for: login/server details for BTP, a list of tables and columns, expected data size (GB), and the source of each table (BTP database or REST endpoint). Prathap replies with the SQL document, a size estimate of 10 GB (3 years is under 200 MB, 10 years under 1 GB), and the data files. Pushkar is getting BTP instructions from the vendor. Someone also shared the SAP Data Reference workbook and the FDS.</td><td>Tells you what the team is waiting for and what was delivered.</td><td><span class="pill ok">Read in full</span></td></tr><tr><td><b>SQL Queries.docx — the ROOT copy (8,027 characters)</b><div class="k">Client SQL + table specs</div></td><td>Four SQL steps (base orders, rework movements, delivered status, final join) <b>and</b> an 'SAP to MS Access' specification listing four tables with column names, types and sizes: STG_ORDER_BASE, STG_ORDER_REWORK, STG_ORDER_STATUS, CONSOLIDATED_ORDER_SUMMARY.</td><td>This is THE document for Part A table and column names.</td><td><span class="pill ok">Read in full</span></td></tr><tr><td><b>SQL Queries.docx — copy inside the Paint data folder (2,708 characters)</b><div class="k">Client SQL only</div></td><td>The same four SQL steps but <b>without</b> the table specs. Different file from the root copy.</td><td>Don't use it for table specs.</td><td><span class="pill ok">Read in full</span></td></tr><tr><td><b>Paint data folder — 4 Excel files</b><div class="k">Real data from SAP</div></td><td>PROCESS ORD BASE.xlsx (26,456 orders) · REWORK MOVEMENTS.xlsx (about 1.29 million raw movement lines, split over 4 sheets because Excel allows ~1M rows per sheet) · PROCESS ORDER STATUS.xlsx (327,980 rows) · Cost Report.xlsx (26,456 rows, 18 columns — the client's finished result).</td><td>The only real data we have. Every column was profiled (types, lengths, empties).</td><td><span class="pill ok">Profiled fully and loaded</span></td></tr><tr><td><b>SAP_Data_Reference_Master_Transactional_BOM_v5 (two copies)</b><div class="k">Catalog of SAP fields</div></td><td>10 sheets: which SAP tables and fields (MARA, MARC, MBEW, MARD, AFKO, AFPO, AFRU, RESB, MSEG, QALS, MAST, STKO, STPO, MKAL, PLKO, PLPO, MCHA ...) could feed the model, each with a plain-English 'why useful', plus a list of questions to confirm with the SAP team ('Extraction Notes').</td><td>A shopping list of fields, not a table design: it gives NO data types. The two copies are identical in content; only the file size differs.</td><td><span class="pill ok">Read; both copies compared cell by cell</span></td></tr><tr><td><b>FDS_Master_Data_Extraction_v1.5.docx</b><div class="k">Functional design for the SAP BTP app</div></td><td>How a SAP BTP app will extract production BOMs, production versions and master recipes using three standard OData services (API_PRODUCT_SRV, API_BILL_OF_MATERIAL_SRV, API_MASTERRECIPE_0001). Defines three output datasets of 23, 12 and 17 fields, the storage tables, selection screen, business rules and open items.</td><td>THE document for Part B1 table and column names. It does NOT cover the paint orders / rework / status data.</td><td><span class="pill ok">Read (sections 4, 6, 7, 10, 12, 13)</span></td></tr><tr><td><b>Master_Data_Extraction_flow_v1.5.pdf</b><div class="k">Flow diagram for the FDS</div></td><td>8 pages, probably the extraction flow chart.</td><td>Could not extract text here.</td><td><span class="pill bad">NOT read — open it yourself</span></td></tr><tr><td><b>BOM Optimizer RTM - V1.xlsx</b><div class="k">Requirements for the optimizer</div></td><td>What the optimizer must do: compare planned/static BOMs with proposed ones, rank by history, cost and number of rework cycles, show raw material cost, legal restrictions, season. Lists the data objects needed, a screen sketch ('Prod Output Persona' with rank, cost, average cycles, Adopt button) and open questions about how rework orders link to the original order.</td><td>Explains <i>why</i> the data is needed. It does not define tables.</td><td><span class="pill ok">Read</span></td></tr><tr><td><b>bom details 1.md</b><div class="k">Your own notes (ChatGPT style)</div></td><td>Make-to-order vs make-to-stock ideas, an Azure architecture with React UI and microservices, and a list of agents and modules.</td><td>Vision/architecture only. Not a client specification, no tables.</td><td><span class="pill ok">Read</span></td></tr><tr><td><b>fortun8tech Cloud Connector link</b><div class="k">Install guide</div></td><td>Said to explain how to install SAP Cloud Connector so BTP can reach an on-premise SAP. A secure tunnel only; something must still call SAP through it.</td><td>Needed later for live extraction.</td><td><span class="pill bad">NOT opened</span></td></tr></tbody></table></div>
+</section>
+<section class="page" id="sources">
+  <h2>2. "Where is it written?" — topic → document</h2><p class="lead">Use this when someone asks "who said that?".</p>
+  <div class="tw"><table><thead><tr><th>Topic</th><th>Document</th><th>Where inside</th></tr></thead><tbody>
+  <tr><td>Paint table names, column names, sizes</td><td>SQL Queries.docx (ROOT copy)</td><td>'SAP to MS Access Database Structure Specification', Steps 1–4</td></tr><tr><td>The four SQL queries</td><td>SQL Queries.docx (either copy)</td><td>Steps 1–4</td></tr><tr><td>Real column headers of the data</td><td>The 4 Paint data Excel files</td><td>Row 1 of each sheet</td></tr><tr><td>SAP APIs to call (and for which data)</td><td>FDS v1.5</td><td>Section 4.1 / 4.2</td></tr><tr><td>BOM output fields (23), production version (12), recipe (17)</td><td>FDS v1.5</td><td>Sections 7.2 / 7.3 / 7.4, examples in 13</td></tr><tr><td>Storage tables ds1 / ds2 / ds3, job_run, t_sel_variant</td><td>FDS v1.5</td><td>Section 12.4 'Storage Design'</td></tr><tr><td>Selection screen / saved variants</td><td>FDS v1.5</td><td>Sections 6.1–6.3</td></tr><tr><td>Open decisions (where to store data, PP vs PP-PI ...)</td><td>FDS v1.5</td><td>Section 10 (OI-001 … OI-012)</td></tr><tr><td>Material / transaction / BOM / batch field catalog</td><td>SAP Data Reference workbook</td><td>Sheets: Field Master List, Transactional Data, BOM Data, Companion Data</td></tr><tr><td>Questions for the SAP team (ECC vs S/4, cost field ...)</td><td>SAP Data Reference workbook · RTM</td><td>'Extraction Notes' · 'Questions'</td></tr><tr><td>What the model must rank on (history, cost, cycles)</td><td>BOM Optimizer RTM</td><td>Sheet 'Production'</td></tr><tr><td>Screen sketch of the output</td><td>BOM Optimizer RTM</td><td>Sheet 'Prod Output Persona'</td></tr><tr><td>Data size: 10 GB planned</td><td>Chat message from Prathap</td><td>'Size - For now, lets go with 10 GB'</td></tr><tr><td>Tables etl_*, ref_*, stg_* naming, load log, rejects</td><td>Our own design</td><td>db/schema.sql — not in any client document</td></tr></tbody></table></div>
+</section>
+<section class="page" id="database">
+  <h2>3. Where the database is on your machine</h2>
+  <p class="lead">All tables were created on a local PostgreSQL running in Docker. Nothing is in the cloud.</p>
+  <dl class="kv">
+    <dt>What</dt><dd>Docker container <code>bom-paint-postgres</code> (image <code>postgres:15-alpine</code>) — PostgreSQL 15.18 on x86_64-pc-linux-musl</dd>
+    <dt>Address</dt><dd><code>localhost:5433</code> (inside the container it is 5432)</dd>
+    <dt>Database / user</dt><dd>database <code>bom_paint</code> · user <code>bom</code> · password is in <code>docker-compose.yml</code> (local development only)</dd>
+    <dt>Where the data sits</dt><dd>Docker volume <code>paint_etl_bom_paint_pgdata</code> — survives restarts and <code>docker compose down</code></dd>
+    <dt>Project folder</dt><dd><code>C:\Users\dell\Documents\src\bom\paint_etl</code></dd>
+    <dt>Where the DDL is</dt><dd><code>paint_etl\db\schema.sql</code> — the app runs it at every start (safe to repeat), which is how the tables were created</dd>
+    <dt>The app</dt><dd><code>http://localhost:8010</code> — upload page. Start with <code>.\run.ps1</code></dd>
+    <dt>File folders</dt><dd><code>paint_etl\data\inbox</code> → <code>processing</code> → <code>processed</code> (or <code>failed</code>)</dd>
+  </dl>
+  <h3>How to look at the tables</h3>
+  <ul class="tight">
+    <li><b>In the UI:</b> http://localhost:8010 → section "3. Database tables" → click a table.</li>
+    <li><b>In a terminal:</b> <code>docker exec -it bom-paint-postgres psql -U bom -d bom_paint</code>, then <code>\dt</code> (list tables) or <code>\d stg_order_base</code> (one table).</li>
+    <li><b>With a SQL tool</b> (DBeaver, pgAdmin ...): connect to localhost, port 5433, database bom_paint.</li>
+  </ul>
+  <div class="callout">Two other databases exist on this computer and are <b>not</b> used here: the older BOM app's SQLite file (<code>src\bom\api\bom_platform.db</code>) and <code>blueplus-postgres</code> on port 5432.</div>
+</section>
+<section class="page" id="perspective">
+  <h2>4. Tables from the API and UI point of view</h2>
+  <p class="lead">Which table is filled by what, and who reads it.</p>
+  <h3>What the UI page does (http://localhost:8010)</h3>
+  <ul class="tight">
+    <li><b>1 Upload</b> — pick files (type is detected from the column headers) → <code>POST /api/upload</code> → file lands in the inbox.</li>
+    <li><b>2 Processing</b> — live status of each file/sheet → <code>GET /api/jobs</code> (table <code>etl_ingest_batch</code>); rejected rows → <code>GET /api/rejects/{id}</code>; "Rebuild summary now" → <code>POST /api/rebuild</code>.</li>
+    <li><b>3 Database tables</b> — row counts and first rows of every table → <code>GET /api/overview</code>, <code>GET /api/table/{name}</code>.</li>
+    <li><b>4 Data checks</b> — our summary vs the client's Cost Report → <code>GET /api/checks</code>.</li>
+  </ul>
+  <h3>What the background worker does</h3>
+  <p>Watches <code>data/inbox</code> every 3 seconds. For each file: detect type → clean rows → bulk load (one transaction per sheet, all-or-nothing) → log in <code>etl_ingest_batch</code> → when the inbox is empty, rebuild <code>consolidated_order_summary</code> → move the file to <code>processed</code> or <code>failed</code>.</p>
+  <h3>Table by table</h3>
+  <div class="tw"><table><thead><tr><th>Table</th><th>Written by</th><th>Read by</th></tr></thead><tbody><tr><td><a href="#t-etl_ingest_batch"><code>etl_ingest_batch</code></a></td><td>Background worker, automatically, for every file that arrives in the inbox.</td><td>UI section 2 &#x27;Processing&#x27; (GET /api/jobs). Duplicate-file check inside the worker.</td></tr><tr><td><a href="#t-etl_reject_row"><code>etl_reject_row</code></a></td><td>Background worker, while loading.</td><td>UI: click the red &#x27;Rejected&#x27; number in the Processing table (GET /api/rejects/{id}).</td></tr><tr><td><a href="#t-stg_order_base"><code>stg_order_base</code></a></td><td>Upload PROCESS ORD BASE.xlsx → worker (insert or update on order number).</td><td>Summary rebuild; UI table browser; data checks.</td></tr><tr><td><a href="#t-stg_order_rework"><code>stg_order_rework</code></a></td><td>Upload REWORK MOVEMENTS.xlsx → worker (append, one transaction per sheet).</td><td>Summary rebuild (counts lines and sums amounts per order).</td></tr><tr><td><a href="#t-stg_order_status"><code>stg_order_status</code></a></td><td>Upload PROCESS ORDER STATUS.xlsx → worker (insert or update, keeps the latest date).</td><td>Summary rebuild.</td></tr><tr><td><a href="#t-consolidated_order_summary"><code>consolidated_order_summary</code></a></td><td>Rebuilt automatically by the worker when the inbox is empty, or by the &#x27;Rebuild summary now&#x27; button (POST /api/rebuild).</td><td>UI table browser; data checks (GET /api/checks); the future BOM-ranking model.</td></tr><tr><td><a href="#t-ref_cost_report"><code>ref_cost_report</code></a></td><td>Upload Cost Report.xlsx → worker.</td><td>UI section 4 &#x27;Data checks&#x27; (GET /api/checks).</td></tr><tr><td><a href="#t-t_sel_variant"><code>t_sel_variant</code></a></td><td>Future: the SAP BTP app&#x27;s UI. Nothing in our app writes it yet.</td><td>Future: the BTP extraction job.</td></tr><tr><td><a href="#t-job_run"><code>job_run</code></a></td><td>Future: the BTP extraction job.</td><td>Future: consumers filter ds1/ds2/ds3 by run_id.</td></tr><tr><td><a href="#t-ds1_bom_components"><code>ds1_bom_components</code></a></td><td>Future: BTP app, Call 3.</td><td>Future: ML model (finds the best BOM alternative at a given date).</td></tr><tr><td><a href="#t-ds2_production_version"><code>ds2_production_version</code></a></td><td>Future: BTP app, Call 2.</td><td>Future: joins ds1 (via BOM variant) and ds3 (via recipe group + counter).</td></tr><tr><td><a href="#t-ds3_master_recipe"><code>ds3_master_recipe</code></a></td><td>Future: BTP app, Call 4.</td><td>Future: ML model; production-efficiency figures (hours, work centre).</td></tr><tr><td><a href="#t-sap_material"><code>sap_material</code></a></td><td>Future: extraction method not decided (FDS open item OI-002).</td><td>Future: join key MATNR for every other dataset.</td></tr><tr><td><a href="#t-sap_material_plant"><code>sap_material_plant</code></a></td><td>Future.</td><td>Future.</td></tr><tr><td><a href="#t-sap_material_valuation"><code>sap_material_valuation</code></a></td><td>Future.</td><td>Future: real material cost.</td></tr><tr><td><a href="#t-sap_material_stock"><code>sap_material_stock</code></a></td><td>Future.</td><td>Future: availability of raw materials.</td></tr><tr><td><a href="#t-sap_order_confirmation"><code>sap_order_confirmation</code></a></td><td>Future.</td><td>Future: planned-vs-actual timing and real rework / delay signals.</td></tr><tr><td><a href="#t-sap_order_component"><code>sap_order_component</code></a></td><td>Future.</td><td>Future: what was really consumed vs the BOM.</td></tr><tr><td><a href="#t-sap_batch"><code>sap_batch</code></a></td><td>Future.</td><td>Future: lot-level model features.</td></tr></tbody></table></div>
+  <div class="callout">The Part B tables have no loader in our app yet. They will be filled by the SAP BTP extraction (or by files in the same shared-folder flow once we have a sample).</div>
+</section>
+<section class="page" id="findings">
+  <h2>5. Findings and open questions</h2>
+  <h3>Things found in the client's data and SQL</h3>
+  <ul class="tight">
+    <li><b>Material cost is 0 on every order.</b> The SQL reads it from AUFK-USER4, which is empty. Real cost needs the valuation table (MBEW) or BOM prices.</li>
+    <li><b>Labor cost is a formula, not SAP data:</b> batch size × 12.50.</li>
+    <li><b>"Rework" = movement type 261</b>, which is the normal goods issue to an order. The client's own note warns it may not be true rework. Some orders show hundreds of "cycles". "48 hours per cycle" is hard-coded.</li>
+    <li><b>Rework cycle definition differs:</b> SQL says COUNT(DISTINCT document); the delivered Cost Report equals the number of lines (matches all 26,456 orders; DISTINCT differs on 2,396). We follow the delivered report.</li>
+    <li><b>The SQL would not run as written</b> (missing commas, aliases used in Step 4 that Step 1 never defines, HANA-only ADD_MONTHS).</li>
+    <li><b>The rework extract is wider than the order extract:</b> 895,713 rework lines (39,248 orders) have no matching order in the base file.</li>
+    <li>Order numbers lose their leading zeros in Excel; we pad them back to 12 digits so they join with the status key (OR + 12 digits).</li>
+  </ul>
+  <h3>Questions to ask</h3>
+  <ul class="tight">
+    <li><b>Client:</b> what is the true rework signal? Which cycle definition is intended? Where does real material cost live?</li>
+    <li><b>SAP team:</b> ECC or S/4HANA? Is there an API for the status history (JEST / JCDS)? Which plants use recipes (PP-PI) and which routings? (FDS OI-007)</li>
+    <li><b>Architecture:</b> where do extracted BOM / recipe data go — BTP HANA Cloud, Datasphere, or a local database? (FDS OI-002) Should material type, MRP type and procurement type be stored as columns? (OI-009)</li>
+    <li><b>Access:</b> BTP login and server details (Pushkar / vendor); Cloud Connector set-up.</li>
+  </ul>
+  <h3>What is not done yet</h3>
+  <ul class="tight">
+    <li>No loader for Part B (needs the BTP extraction or a sample output file).</li>
+    <li>Column types / lengths for Part B1 are our choice, based on the FDS sample values — verify against the real OData $metadata.</li>
+    <li>Part B2 is a draft, a subset of the workbook's fields.</li>
+    <li>The flow PDF and the Cloud Connector link have not been read.</li>
+    <li>No login on the upload page; local use only.</li>
+  </ul>
+</section>
+<section class="page" id="tables">
+  <h2>6. One page per table</h2>
+  <p class="lead">Each following page: purpose, the document where it is written, who fills and reads it, all columns, and the exact DDL.</p>
+  <h3>Part A — Paint order data</h3><p class="lead" style="margin:0">We HAVE the files today. Loaded by the upload page / background worker.</p><div class="tw"><table><thead><tr><th>Table</th><th>What it holds</th><th class="num">Columns</th><th class="num">Rows now</th></tr></thead><tbody><tr><td><a href="#t-etl_ingest_batch"><code>etl_ingest_batch</code></a></td><td>Load log (one row per file + sheet)</td><td class="num">12</td><td class="num">8</td></tr><tr><td><a href="#t-etl_reject_row"><code>etl_reject_row</code></a></td><td>Rejected rows</td><td class="num">5</td><td class="num">0</td></tr><tr><td><a href="#t-stg_order_base"><code>stg_order_base</code></a></td><td>STG_ORDER_BASE — one row per process order</td><td class="num">12</td><td class="num">26,456</td></tr><tr><td><a href="#t-stg_order_rework"><code>stg_order_rework</code></a></td><td>STG_ORDER_REWORK — raw movement-261 lines</td><td class="num">14</td><td class="num">1,294,300</td></tr><tr><td><a href="#t-stg_order_status"><code>stg_order_status</code></a></td><td>STG_ORDER_STATUS — delivered date</td><td class="num">3</td><td class="num">327,980</td></tr><tr><td><a href="#t-consolidated_order_summary"><code>consolidated_order_summary</code></a></td><td>CONSOLIDATED_ORDER_SUMMARY — the final per-order report</td><td class="num">16</td><td class="num">26,456</td></tr><tr><td><a href="#t-ref_cost_report"><code>ref_cost_report</code></a></td><td>REF_COST_REPORT — the client&#x27;s own answer</td><td class="num">19</td><td class="num">26,456</td></tr></tbody></table></div><h3>Part B1 — FDS extraction tables</h3><p class="lead" style="margin:0">Layout is exactly FDS v1.5. Empty until the SAP BTP extraction exists.</p><div class="tw"><table><thead><tr><th>Table</th><th>What it holds</th><th class="num">Columns</th><th class="num">Rows now</th></tr></thead><tbody><tr><td><a href="#t-t_sel_variant"><code>t_sel_variant</code></a></td><td>Saved selections (FDS: T_SEL_VARIANT)</td><td class="num">6</td><td class="num">0</td></tr><tr><td><a href="#t-job_run"><code>job_run</code></a></td><td>Extraction runs (FDS: job_run)</td><td class="num">9</td><td class="num">0</td></tr><tr><td><a href="#t-ds1_bom_components"><code>ds1_bom_components</code></a></td><td>Dataset 1 — Production BOM (23 fields)</td><td class="num">25</td><td class="num">0</td></tr><tr><td><a href="#t-ds2_production_version"><code>ds2_production_version</code></a></td><td>Dataset 2 — Production Version (12 fields)</td><td class="num">13</td><td class="num">0</td></tr><tr><td><a href="#t-ds3_master_recipe"><code>ds3_master_recipe</code></a></td><td>Dataset 3 — Master Recipe (17 fields)</td><td class="num">19</td><td class="num">0</td></tr></tbody></table></div><h3>Part B2 — Draft model-feature tables</h3><p class="lead" style="margin:0">From the SAP Data Reference workbook, NOT in the FDS. Subset of fields, types assumed.</p><div class="tw"><table><thead><tr><th>Table</th><th>What it holds</th><th class="num">Columns</th><th class="num">Rows now</th></tr></thead><tbody><tr><td><a href="#t-sap_material"><code>sap_material</code></a></td><td>DRAFT — Material master (MARA + MAKT)</td><td class="num">16</td><td class="num">0</td></tr><tr><td><a href="#t-sap_material_plant"><code>sap_material_plant</code></a></td><td>DRAFT — Material by plant (MARC)</td><td class="num">19</td><td class="num">0</td></tr><tr><td><a href="#t-sap_material_valuation"><code>sap_material_valuation</code></a></td><td>DRAFT — Valuation / cost (MBEW)</td><td class="num">10</td><td class="num">0</td></tr><tr><td><a href="#t-sap_material_stock"><code>sap_material_stock</code></a></td><td>DRAFT — Stock by storage location (MARD)</td><td class="num">6</td><td class="num">0</td></tr><tr><td><a href="#t-sap_order_confirmation"><code>sap_order_confirmation</code></a></td><td>DRAFT — Order confirmations (AFRU)</td><td class="num">10</td><td class="num">0</td></tr><tr><td><a href="#t-sap_order_component"><code>sap_order_component</code></a></td><td>DRAFT — Order component reservations (RESB)</td><td class="num">6</td><td class="num">0</td></tr><tr><td><a href="#t-sap_batch"><code>sap_batch</code></a></td><td>DRAFT — Batch master (MCHA)</td><td class="num">6</td><td class="num">0</td></tr></tbody></table></div>
+</section>
+<section class="page" id="t-etl_ingest_batch">
+  <div class="k">Part A — Paint order data</div>
+  <h2><code style="font-size:19px">etl_ingest_batch</code></h2>
+  <p class="lead">Load log (one row per file + sheet) &nbsp; <span class="pill ok">Built · loaded</span> <span class="pill info">8 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>A log book of every file we load: what it was detected as, rows read / loaded / rejected, success or failure. It also stops the same file content being loaded twice (SHA-256).</dd>
+    <dt>Where it is written</dt><dd>Our own design. Not in any client document.</dd>
+    <dt>Filled by</dt><dd>Background worker, automatically, for every file that arrives in the inbox.</dd>
+    <dt>Read by</dt><dd>UI section 2 &#x27;Processing&#x27; (GET /api/jobs). Duplicate-file check inside the worker.</dd>
+  </dl>
+  
+  <h3>Columns (12)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>batch_id</code></td><td>bigint</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>dataset</code></td><td>character varying(20)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>source_file</code></td><td>character varying(255)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>source_sheet</code></td><td>character varying(50)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>file_sha256</code></td><td>character(64)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>rows_in_file</code></td><td>integer</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>rows_loaded</code></td><td>integer</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>rows_rejected</code></td><td>integer</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>status</code></td><td>character varying(10)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>message</code></td><td>text</td><td>null ok</td><td></td><td></td></tr><tr><td><code>started_at</code></td><td>timestamp with time zone</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>finished_at</code></td><td>timestamp with time zone</td><td>null ok</td><td></td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS etl_ingest_batch (
+    batch_id      BIGSERIAL    PRIMARY KEY,
+    dataset       VARCHAR(20)  NOT NULL
+                  CHECK (dataset IN (&#x27;ORDER_BASE&#x27;,&#x27;ORDER_REWORK&#x27;,&#x27;ORDER_STATUS&#x27;,&#x27;COST_REPORT&#x27;,&#x27;UNKNOWN&#x27;)),
+    source_file   VARCHAR(255) NOT NULL,
+    source_sheet  VARCHAR(50)  NOT NULL DEFAULT &#x27;&#x27;,
+    file_sha256   CHAR(64)     NOT NULL,
+    rows_in_file  INTEGER      NOT NULL DEFAULT 0,
+    rows_loaded   INTEGER      NOT NULL DEFAULT 0,
+    rows_rejected INTEGER      NOT NULL DEFAULT 0,
+    status        VARCHAR(10)  NOT NULL DEFAULT &#x27;RUNNING&#x27;
+                  CHECK (status IN (&#x27;RUNNING&#x27;,&#x27;SUCCESS&#x27;,&#x27;FAILED&#x27;,&#x27;SKIPPED&#x27;)),
+    message       TEXT,
+    started_at    TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    finished_at   TIMESTAMPTZ
+);
+CREATE UNIQUE INDEX IF NOT EXISTS ux_batch_once
+    ON etl_ingest_batch (dataset, file_sha256, source_sheet)
+    WHERE status IN (&#x27;RUNNING&#x27;,&#x27;SUCCESS&#x27;);</pre></div>
+</section>
+<section class="page" id="t-etl_reject_row">
+  <div class="k">Part A — Paint order data</div>
+  <h2><code style="font-size:19px">etl_reject_row</code></h2>
+  <p class="lead">Rejected rows &nbsp; <span class="pill ok">Built</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Rows that could not be loaded (bad date, empty order number, text too long ...) with the reason and the raw values. First 1,000 per sheet are kept.</dd>
+    <dt>Where it is written</dt><dd>Our own design.</dd>
+    <dt>Filled by</dt><dd>Background worker, while loading.</dd>
+    <dt>Read by</dt><dd>UI: click the red &#x27;Rejected&#x27; number in the Processing table (GET /api/rejects/{id}).</dd>
+  </dl>
+  <div class="callout">Right now 0 rows were rejected in all four real files.</div>
+  <h3>Columns (5)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>reject_id</code></td><td>bigint</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>batch_id</code></td><td>bigint</td><td>NOT NULL</td><td>FK → etl_ingest_batch</td><td></td></tr><tr><td><code>row_number</code></td><td>integer</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>reason</code></td><td>text</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>raw_row</code></td><td>text</td><td>null ok</td><td></td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS etl_reject_row (
+    reject_id  BIGSERIAL PRIMARY KEY,
+    batch_id   BIGINT    NOT NULL REFERENCES etl_ingest_batch(batch_id) ON DELETE CASCADE,
+    row_number INTEGER   NOT NULL,
+    reason     TEXT      NOT NULL,
+    raw_row    TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_reject_batch ON etl_reject_row (batch_id);</pre></div>
+</section>
+<section class="page" id="t-stg_order_base">
+  <div class="k">Part A — Paint order data</div>
+  <h2><code style="font-size:19px">stg_order_base</code></h2>
+  <p class="lead">STG_ORDER_BASE — one row per process order &nbsp; <span class="pill ok">Built · loaded</span> <span class="pill info">26,456 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Plant, material, description, batch size, unit, start date, material cost and labor cost for each process order (26,456 orders, plants US01 and US18).</dd>
+    <dt>Where it is written</dt><dd>SQL Queries.docx (root copy) → &#x27;Step 1&#x27; and its Access table spec (AUFK + AFKO + AFPO + MAKT). Column names from the header row of PROCESS ORD BASE.xlsx.</dd>
+    <dt>Filled by</dt><dd>Upload PROCESS ORD BASE.xlsx → worker (insert or update on order number).</dd>
+    <dt>Read by</dt><dd>Summary rebuild; UI table browser; data checks.</dd>
+  </dl>
+  <div class="callout">The file also has PSMNG, identical to BATCH_SIZE_QUANTITY, so it is stored once. MATERIAL_COST is 0 on every order (AUFK-USER4 is empty in SAP). LABOR_COST is just batch size × 12.50 (a rule in the client&#x27;s SQL).</div>
+  <h3>Columns (12)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>aufnr</code></td><td>character(12)</td><td>NOT NULL</td><td>PK</td><td>process order, zero-padded</td></tr><tr><td><code>autyp</code></td><td>smallint</td><td>NOT NULL</td><td></td><td>40 = process order</td></tr><tr><td><code>werks</code></td><td>character varying(4)</td><td>NOT NULL</td><td></td><td>plant (US01 / US18)</td></tr><tr><td><code>objnr</code></td><td>character varying(22)</td><td>NOT NULL</td><td></td><td>&#x27;OR&#x27;+aufnr, status key</td></tr><tr><td><code>matnr</code></td><td>character varying(18)</td><td>NOT NULL</td><td></td><td>material / SKU</td></tr><tr><td><code>maktx</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>material description</td></tr><tr><td><code>gstrp</code></td><td>date</td><td>NOT NULL</td><td></td><td>basic start date</td></tr><tr><td><code>batch_size_quantity</code></td><td>numeric(15,3)</td><td>NOT NULL</td><td></td><td>(= PSMNG in the file)</td></tr><tr><td><code>base_unit_of_measure</code></td><td>character varying(3)</td><td>NOT NULL</td><td></td><td>LB, KG ...</td></tr><tr><td><code>material_cost</code></td><td>numeric(18,3)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>labor_cost</code></td><td>numeric(18,3)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>batch_id</code></td><td>bigint</td><td>NOT NULL</td><td>FK → etl_ingest_batch</td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS stg_order_base (
+    aufnr                CHAR(12)      PRIMARY KEY,     -- process order, zero-padded
+    autyp                SMALLINT      NOT NULL,        -- 40 = process order
+    werks                VARCHAR(4)    NOT NULL,        -- plant (US01 / US18)
+    objnr                VARCHAR(22)   NOT NULL UNIQUE, -- &#x27;OR&#x27;+aufnr, status key
+    matnr                VARCHAR(18)   NOT NULL,        -- material / SKU
+    maktx                VARCHAR(40),                   -- material description
+    gstrp                DATE          NOT NULL,        -- basic start date
+    batch_size_quantity  NUMERIC(15,3) NOT NULL,        -- (= PSMNG in the file)
+    base_unit_of_measure VARCHAR(3)    NOT NULL,        -- LB, KG ...
+    material_cost        NUMERIC(18,3) NOT NULL DEFAULT 0,
+    labor_cost           NUMERIC(18,3) NOT NULL DEFAULT 0,
+    batch_id             BIGINT        NOT NULL REFERENCES etl_ingest_batch(batch_id)
+);
+CREATE INDEX IF NOT EXISTS ix_stg_base_matnr      ON stg_order_base (matnr);
+CREATE INDEX IF NOT EXISTS ix_stg_base_werks_gstrp ON stg_order_base (werks, gstrp);</pre></div>
+</section>
+<section class="page" id="t-stg_order_rework">
+  <div class="k">Part A — Paint order data</div>
+  <h2><code style="font-size:19px">stg_order_rework</code></h2>
+  <p class="lead">STG_ORDER_REWORK — raw movement-261 lines &nbsp; <span class="pill ok">Built · loaded</span> <span class="pill info">1,294,300 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Every goods-movement line with movement type 261 against a process order: document number, amount, posting date. About 1.29 million rows.</dd>
+    <dt>Where it is written</dt><dd>SQL Queries.docx → &#x27;Step 2&#x27; (MSEG). Column names from REWORK MOVEMENTS.xlsx (4 sheets).</dd>
+    <dt>Filled by</dt><dd>Upload REWORK MOVEMENTS.xlsx → worker (append, one transaction per sheet).</dd>
+    <dt>Read by</dt><dd>Summary rebuild (counts lines and sums amounts per order).</dd>
+  </dl>
+  <div class="callout">DIFFERENT from the client&#x27;s doc: their STG_ORDER_REWORK table is already totalled per order, but the file we received is the raw lines before totalling. So we keep the raw lines and do the totals ourselves. Movement 261 is the normal goods issue to an order — the client&#x27;s own note warns it may not mean true rework. The extract has no line number (ZEILE), so we use a surrogate key.</div>
+  <h3>Columns (14)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>rework_id</code></td><td>bigint</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>aufnr</code></td><td>character(12)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>mblnr</code></td><td>character varying(10)</td><td>NOT NULL</td><td></td><td>material document</td></tr><tr><td><code>mjahr</code></td><td>smallint</td><td>NOT NULL</td><td></td><td>document year</td></tr><tr><td><code>dmbtr</code></td><td>numeric(15,2)</td><td>NOT NULL</td><td></td><td>amount in local currency</td></tr><tr><td><code>bwart</code></td><td>character varying(3)</td><td>NOT NULL</td><td></td><td>movement type (&#x27;261&#x27;)</td></tr><tr><td><code>budat</code></td><td>date</td><td>NOT NULL</td><td></td><td>posting date</td></tr><tr><td><code>cpudt</code></td><td>date</td><td>null ok</td><td></td><td></td></tr><tr><td><code>cputm</code></td><td>time without time zone</td><td>null ok</td><td></td><td></td></tr><tr><td><code>xblnr</code></td><td>character varying(16)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>tcode2</code></td><td>character varying(20)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>vbeln_im</code></td><td>character varying(10)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>vbelp_im</code></td><td>integer</td><td>null ok</td><td></td><td></td></tr><tr><td><code>batch_id</code></td><td>bigint</td><td>NOT NULL</td><td>FK → etl_ingest_batch</td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS stg_order_rework (
+    rework_id  BIGSERIAL     PRIMARY KEY,
+    aufnr      CHAR(12)      NOT NULL,
+    mblnr      VARCHAR(10)   NOT NULL,        -- material document
+    mjahr      SMALLINT      NOT NULL,        -- document year
+    dmbtr      NUMERIC(15,2) NOT NULL,        -- amount in local currency
+    bwart      VARCHAR(3)    NOT NULL,        -- movement type (&#x27;261&#x27;)
+    budat      DATE          NOT NULL,        -- posting date
+    cpudt      DATE,
+    cputm      TIME,
+    xblnr      VARCHAR(16),
+    tcode2     VARCHAR(20),
+    vbeln_im   VARCHAR(10),
+    vbelp_im   INTEGER,
+    batch_id   BIGINT        NOT NULL REFERENCES etl_ingest_batch(batch_id)
+);
+CREATE INDEX IF NOT EXISTS ix_stg_rework_aufnr       ON stg_order_rework (aufnr);
+CREATE INDEX IF NOT EXISTS ix_stg_rework_aufnr_mblnr ON stg_order_rework (aufnr, mblnr);
+CREATE INDEX IF NOT EXISTS ix_stg_rework_budat       ON stg_order_rework (budat);</pre></div>
+</section>
+<section class="page" id="t-stg_order_status">
+  <div class="k">Part A — Paint order data</div>
+  <h2><code style="font-size:19px">stg_order_status</code></h2>
+  <p class="lead">STG_ORDER_STATUS — delivered date &nbsp; <span class="pill ok">Built · loaded</span> <span class="pill info">327,980 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>The latest date each order reached status I0012 &#x27;Delivered&#x27; (DLV).</dd>
+    <dt>Where it is written</dt><dd>SQL Queries.docx → &#x27;Step 3&#x27; (JEST + JCDS). File: PROCESS ORDER STATUS.xlsx.</dd>
+    <dt>Filled by</dt><dd>Upload PROCESS ORDER STATUS.xlsx → worker (insert or update, keeps the latest date).</dd>
+    <dt>Read by</dt><dd>Summary rebuild.</dd>
+  </dl>
+  <div class="callout">The file has 327,980 orders going back to 2021, but only 26,456 match the orders we hold. 4,780 of those orders have no delivered date.</div>
+  <h3>Columns (3)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>objnr</code></td><td>character varying(22)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>dlv_status_date</code></td><td>date</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>batch_id</code></td><td>bigint</td><td>NOT NULL</td><td>FK → etl_ingest_batch</td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS stg_order_status (
+    objnr            VARCHAR(22) PRIMARY KEY,
+    dlv_status_date  DATE        NOT NULL,
+    batch_id         BIGINT      NOT NULL REFERENCES etl_ingest_batch(batch_id)
+);</pre></div>
+</section>
+<section class="page" id="t-consolidated_order_summary">
+  <div class="k">Part A — Paint order data</div>
+  <h2><code style="font-size:19px">consolidated_order_summary</code></h2>
+  <p class="lead">CONSOLIDATED_ORDER_SUMMARY — the final per-order report &nbsp; <span class="pill ok">Built · loaded</span> <span class="pill info">26,456 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>One row per order combining base + rework + status: rework cycles and hours, unit cost, material and labor cost, total cost, rework cost, projected savings (30% of rework cost), delivered date.</dd>
+    <dt>Where it is written</dt><dd>SQL Queries.docx → &#x27;Step 4&#x27; and the CONSOLIDATED_ORDER_SUMMARY Access spec.</dd>
+    <dt>Filled by</dt><dd>Rebuilt automatically by the worker when the inbox is empty, or by the &#x27;Rebuild summary now&#x27; button (POST /api/rebuild).</dd>
+    <dt>Read by</dt><dd>UI table browser; data checks (GET /api/checks); the future BOM-ranking model.</dd>
+  </dl>
+  <div class="callout">Rework cycles = number of movement lines. That equals the client&#x27;s delivered Cost Report on all 26,456 orders, but their SQL text says COUNT(DISTINCT MBLNR), which differs on 2,396 orders. Hours = cycles × 48 is a fixed client assumption.</div>
+  <h3>Columns (16)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>process_order_number</code></td><td>character(12)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>plant_id</code></td><td>character varying(4)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>material_sku</code></td><td>character varying(18)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>material_description</code></td><td>character varying(40)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>base_unit_of_measure</code></td><td>character varying(3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>batch_size_quantity</code></td><td>numeric(15,3)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>number_of_rework_cycles</code></td><td>integer</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>rework_duration_hours</code></td><td>integer</td><td>NOT NULL</td><td></td><td>cycles x 48 (client assumption)</td></tr><tr><td><code>standard_cost</code></td><td>numeric(18,6)</td><td>null ok</td><td></td><td>material_cost / batch size</td></tr><tr><td><code>material_cost</code></td><td>numeric(18,3)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>labor_cost</code></td><td>numeric(18,3)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>total_standard_cost</code></td><td>numeric(18,3)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>total_rework_cost</code></td><td>numeric(18,2)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>ai_projected_savings</code></td><td>numeric(18,2)</td><td>NOT NULL</td><td></td><td>30% of rework cost</td></tr><tr><td><code>dlv_status_date</code></td><td>date</td><td>null ok</td><td></td><td>NULL = not delivered</td></tr><tr><td><code>refreshed_at</code></td><td>timestamp with time zone</td><td>NOT NULL</td><td></td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS consolidated_order_summary (
+    process_order_number    CHAR(12)      PRIMARY KEY,
+    plant_id                VARCHAR(4)    NOT NULL,
+    material_sku            VARCHAR(18)   NOT NULL,
+    material_description    VARCHAR(40),
+    base_unit_of_measure    VARCHAR(3),
+    batch_size_quantity     NUMERIC(15,3) NOT NULL,
+    number_of_rework_cycles INTEGER       NOT NULL DEFAULT 0,
+    rework_duration_hours   INTEGER       NOT NULL DEFAULT 0,   -- cycles x 48 (client assumption)
+    standard_cost           NUMERIC(18,6),                      -- material_cost / batch size
+    material_cost           NUMERIC(18,3) NOT NULL DEFAULT 0,
+    labor_cost              NUMERIC(18,3) NOT NULL DEFAULT 0,
+    total_standard_cost     NUMERIC(18,3) NOT NULL DEFAULT 0,
+    total_rework_cost       NUMERIC(18,2) NOT NULL DEFAULT 0,
+    ai_projected_savings    NUMERIC(18,2) NOT NULL DEFAULT 0,   -- 30% of rework cost
+    dlv_status_date         DATE,                               -- NULL = not delivered
+    refreshed_at            TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS ix_cons_material ON consolidated_order_summary (material_sku);
+CREATE INDEX IF NOT EXISTS ix_cons_plant    ON consolidated_order_summary (plant_id);
+CREATE INDEX IF NOT EXISTS ix_cons_dlv      ON consolidated_order_summary (dlv_status_date);</pre></div>
+</section>
+<section class="page" id="t-ref_cost_report">
+  <div class="k">Part A — Paint order data</div>
+  <h2><code style="font-size:19px">ref_cost_report</code></h2>
+  <p class="lead">REF_COST_REPORT — the client&#x27;s own answer &nbsp; <span class="pill ok">Built · loaded</span> <span class="pill info">26,456 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>A copy of the client&#x27;s finished Cost Report. Used only to prove that our calculated summary is correct.</dd>
+    <dt>Where it is written</dt><dd>Cost Report.xlsx (18 columns).</dd>
+    <dt>Filled by</dt><dd>Upload Cost Report.xlsx → worker.</dd>
+    <dt>Read by</dt><dd>UI section 4 &#x27;Data checks&#x27; (GET /api/checks).</dd>
+  </dl>
+  <div class="callout">Our summary matches it exactly on order set, rework cycles, rework cost, labor cost, delivered date and projected savings.</div>
+  <h3>Columns (19)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>aufnr</code></td><td>character(12)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>matnr</code></td><td>character varying(18)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>werks</code></td><td>character varying(4)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>maktx</code></td><td>character varying(40)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>autyp</code></td><td>smallint</td><td>null ok</td><td></td><td></td></tr><tr><td><code>objnr</code></td><td>character varying(22)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>dlv_status_date</code></td><td>date</td><td>null ok</td><td></td><td></td></tr><tr><td><code>report_year</code></td><td>smallint</td><td>null ok</td><td></td><td></td></tr><tr><td><code>batch_size_quantity</code></td><td>numeric(15,3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>base_unit_of_measure</code></td><td>character varying(3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>number_of_rework_cycles</code></td><td>integer</td><td>null ok</td><td></td><td>NULL in the file when there is none</td></tr><tr><td><code>rework_duration_hours</code></td><td>integer</td><td>null ok</td><td></td><td></td></tr><tr><td><code>standard_cost</code></td><td>numeric(18,6)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>material_cost</code></td><td>numeric(18,3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>labor_cost</code></td><td>numeric(18,3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>total_standard_cost</code></td><td>numeric(18,3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>total_rework_cost</code></td><td>numeric(18,2)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>ai_projected_savings</code></td><td>numeric(18,2)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>batch_id</code></td><td>bigint</td><td>NOT NULL</td><td>FK → etl_ingest_batch</td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS ref_cost_report (
+    aufnr                   CHAR(12)      PRIMARY KEY,
+    matnr                   VARCHAR(18),
+    werks                   VARCHAR(4),
+    maktx                   VARCHAR(40),
+    autyp                   SMALLINT,
+    objnr                   VARCHAR(22),
+    dlv_status_date         DATE,
+    report_year             SMALLINT,
+    batch_size_quantity     NUMERIC(15,3),
+    base_unit_of_measure    VARCHAR(3),
+    number_of_rework_cycles INTEGER,          -- NULL in the file when there is none
+    rework_duration_hours   INTEGER,
+    standard_cost           NUMERIC(18,6),
+    material_cost           NUMERIC(18,3),
+    labor_cost              NUMERIC(18,3),
+    total_standard_cost     NUMERIC(18,3),
+    total_rework_cost       NUMERIC(18,2),
+    ai_projected_savings    NUMERIC(18,2),
+    batch_id                BIGINT        NOT NULL REFERENCES etl_ingest_batch(batch_id)
+);</pre></div>
+</section>
+<section class="page" id="t-t_sel_variant">
+  <div class="k">Part B1 — FDS extraction tables</div>
+  <h2><code style="font-size:19px">t_sel_variant</code></h2>
+  <p class="lead">Saved selections (FDS: T_SEL_VARIANT) &nbsp; <span class="pill warn">Built · empty (waiting for BTP)</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Saved choices from the BTP app&#x27;s selection screen (which plants, material types, MRP types ...). A scheduled job points at one variant.</dd>
+    <dt>Where it is written</dt><dd>FDS v1.5 section 6.3 and section 12.4.</dd>
+    <dt>Filled by</dt><dd>Future: the SAP BTP app&#x27;s UI. Nothing in our app writes it yet.</dd>
+    <dt>Read by</dt><dd>Future: the BTP extraction job.</dd>
+  </dl>
+  
+  <h3>Columns (6)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>variant_id</code></td><td>character varying(40)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>owner</code></td><td>character varying(80)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>created_at</code></td><td>timestamp with time zone</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>changed_at</code></td><td>timestamp with time zone</td><td>null ok</td><td></td><td></td></tr><tr><td><code>selection_json</code></td><td>jsonb</td><td>NOT NULL</td><td></td><td>plants, materials, materialTypes, mrpTypes,</td></tr><tr><td><code>frequency</code></td><td>character varying(10)</td><td>NOT NULL</td><td></td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS t_sel_variant (
+    variant_id     VARCHAR(40)  PRIMARY KEY,
+    owner          VARCHAR(80),
+    created_at     TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    changed_at     TIMESTAMPTZ,
+    selection_json JSONB        NOT NULL,   -- plants, materials, materialTypes, mrpTypes,
+                                            -- procurementTypes, excludeMaterialDeleted, bomStatus,
+                                            -- validityDate, includeDeletedBoms
+    frequency      VARCHAR(10)  NOT NULL DEFAULT &#x27;ON_DEMAND&#x27;
+                   CHECK (frequency IN (&#x27;ON_DEMAND&#x27;,&#x27;DAILY&#x27;,&#x27;WEEKLY&#x27;,&#x27;MONTHLY&#x27;))
+);</pre></div>
+</section>
+<section class="page" id="t-job_run">
+  <div class="k">Part B1 — FDS extraction tables</div>
+  <h2><code style="font-size:19px">job_run</code></h2>
+  <p class="lead">Extraction runs (FDS: job_run) &nbsp; <span class="pill warn">Built · empty (waiting for BTP)</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>One row per extraction run: the filters used (snapshot), start/end time, status RUNNING / COMPLETE / FAILED, materials total and processed.</dd>
+    <dt>Where it is written</dt><dd>FDS v1.5 section 12.4 (and 6.3).</dd>
+    <dt>Filled by</dt><dd>Future: the BTP extraction job.</dd>
+    <dt>Read by</dt><dd>Future: consumers filter ds1/ds2/ds3 by run_id.</dd>
+  </dl>
+  <div class="callout">Column &#x27;message&#x27; is our addition (the FDS says failures are logged but gives no column for the reason).</div>
+  <h3>Columns (9)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>run_id</code></td><td>bigint</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>variant_id</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>no FK: a run keeps its own snapshot (BR-015)</td></tr><tr><td><code>selection_snapshot</code></td><td>jsonb</td><td>NOT NULL</td><td></td><td>filters used for THIS run</td></tr><tr><td><code>triggered_at</code></td><td>timestamp with time zone</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>completed_at</code></td><td>timestamp with time zone</td><td>null ok</td><td></td><td></td></tr><tr><td><code>status</code></td><td>character varying(10)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>materials_total</code></td><td>integer</td><td>null ok</td><td></td><td></td></tr><tr><td><code>materials_processed</code></td><td>integer</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>message</code></td><td>text</td><td>null ok</td><td></td><td>added: reason when status = FAILED</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS job_run (
+    run_id              BIGSERIAL    PRIMARY KEY,
+    variant_id          VARCHAR(40),                -- no FK: a run keeps its own snapshot (BR-015)
+    selection_snapshot  JSONB        NOT NULL,      -- filters used for THIS run
+    triggered_at        TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    completed_at        TIMESTAMPTZ,
+    status              VARCHAR(10)  NOT NULL DEFAULT &#x27;RUNNING&#x27;
+                        CHECK (status IN (&#x27;RUNNING&#x27;,&#x27;COMPLETE&#x27;,&#x27;FAILED&#x27;)),
+    materials_total     INTEGER,
+    materials_processed INTEGER      NOT NULL DEFAULT 0,
+    message             TEXT                         -- added: reason when status = FAILED
+);</pre></div>
+</section>
+<section class="page" id="t-ds1_bom_components">
+  <div class="k">Part B1 — FDS extraction tables</div>
+  <h2><code style="font-size:19px">ds1_bom_components</code></h2>
+  <p class="lead">Dataset 1 — Production BOM (23 fields) &nbsp; <span class="pill warn">Built · empty (waiting for BTP)</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Every ingredient of every production BOM alternative. Each row carries 11 header fields (material, plant, BOM number, alternative, status, validity, base quantity ...) and 12 item fields (component, quantity, unit, category, validity, phantom / costing / bulk / backflush flags).</dd>
+    <dt>Where it is written</dt><dd>FDS v1.5 section 7.2 (fields), 13.1–13.2 (samples), 12.4 (table name). API_BILL_OF_MATERIAL_SRV → A_BillOfMaterial with $expand to_BillOfMaterialItem.</dd>
+    <dt>Filled by</dt><dd>Future: BTP app, Call 3.</dd>
+    <dt>Read by</dt><dd>Future: ML model (finds the best BOM alternative at a given date).</dd>
+  </dl>
+  <div class="callout">FDS lists the header deletion flag as SAP field LKENZ; real SAP name is probably LOEKZ. Copied as written. Types are our choice (FDS gives none).</div>
+  <h3>Columns (25)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>ds1_id</code></td><td>bigint</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>run_id</code></td><td>bigint</td><td>NOT NULL</td><td>FK → job_run</td><td></td></tr><tr><td><code>material</code></td><td>character varying(40)</td><td>NOT NULL</td><td></td><td>#1 OData Material | SAP MATNR | I_BOMHeader | finished/header material</td></tr><tr><td><code>plant</code></td><td>character varying(4)</td><td>NOT NULL</td><td></td><td>#2 OData Plant | SAP WERKS | I_BOMHeader</td></tr><tr><td><code>bill_of_material_variant_usage</code></td><td>character varying(1)</td><td>NOT NULL</td><td></td><td>#3 OData BillOfMaterialVariantUsage | SAP STLAN | I_BOMHeader | always 1 = Production</td></tr><tr><td><code>bill_of_material</code></td><td>character varying(8)</td><td>NOT NULL</td><td></td><td>#4 OData BillOfMaterial | SAP STLNR | I_BOMHeader | BOM internal number</td></tr><tr><td><code>bill_of_material_variant</code></td><td>character varying(2)</td><td>NOT NULL</td><td></td><td>#5 OData BillOfMaterialVariant | SAP STLAL | I_BOMHeader | alternate BOM 01-99</td></tr><tr><td><code>bom_version_status</code></td><td>character varying(2)</td><td>null ok</td><td></td><td>#6 OData BOMVersionStatus | SAP STLST | I_BOMHeader | 01=Active, 02=Inactive</td></tr><tr><td><code>header_validity_start_date</code></td><td>date</td><td>null ok</td><td></td><td>#7 OData HeaderValidityStartDate | SAP DATUV | I_BOMHeader</td></tr><tr><td><code>bom_is_marked_for_deletion</code></td><td>boolean</td><td>null ok</td><td></td><td>#8 OData BOMIsMarkedForDeletion | SAP LKENZ (as written in the FDS) | I_BOMHeader</td></tr><tr><td><code>bom_header_quantity_in_base_unit</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>#9 OData BOMHeaderQuantityInBaseUnit | SAP BMENG | I_BOMHeader | reference qty for component qty</td></tr><tr><td><code>bom_header_base_unit</code></td><td>character varying(3)</td><td>null ok</td><td></td><td>#10 OData BOMHeaderBaseUnit | SAP BMEIN | I_BOMHeader</td></tr><tr><td><code>bom_header_text</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>#11 OData BOMHeaderText | SAP STKTX | I_BOMHeader</td></tr><tr><td><code>bill_of_material_item_node_number</code></td><td>character varying(8)</td><td>NOT NULL</td><td></td><td>#12 OData BillOfMaterialItemNodeNumber | SAP STLKN | I_BOMItem</td></tr><tr><td><code>bill_of_material_component</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>#13 OData BillOfMaterialComponent | SAP IDNRK | I_BOMItem | component / raw material</td></tr><tr><td><code>component_quantity</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>#14 OData ComponentQuantity | SAP MENGE | I_BOMItem | per header base quantity</td></tr><tr><td><code>component_unit</code></td><td>character varying(3)</td><td>null ok</td><td></td><td>#15 OData ComponentUnit | SAP MEINS | I_BOMItem</td></tr><tr><td><code>bill_of_material_item_category</code></td><td>character varying(1)</td><td>null ok</td><td></td><td>#16 OData BillOfMaterialItemCategory | SAP POSTP | I_BOMItem | L=Stock N=Non-stock R=Variable-size T=Text</td></tr><tr><td><code>validity_start_date</code></td><td>date</td><td>null ok</td><td></td><td>#17 OData ValidityStartDate | SAP DATUV | I_BOMItem | used to pick the component version active on a date</td></tr><tr><td><code>validity_end_date</code></td><td>date</td><td>null ok</td><td></td><td>#18 OData ValidityEndDate | SAP DATUB | I_BOMItem</td></tr><tr><td><code>is_marked_for_deletion</code></td><td>boolean</td><td>null ok</td><td></td><td>#19 OData IsMarkedForDeletion | SAP LOEKZ | I_BOMItem</td></tr><tr><td><code>is_phantom_item</code></td><td>boolean</td><td>null ok</td><td></td><td>#20 OData IsPhantomItem | SAP DUMPS | I_BOMItem</td></tr><tr><td><code>bom_item_is_costing_relevant</code></td><td>boolean</td><td>null ok</td><td></td><td>#21 OData BOMItemIsCostingRelevant | SAP SANKA | I_BOMItem</td></tr><tr><td><code>bom_item_is_bulk_material</code></td><td>boolean</td><td>null ok</td><td></td><td>#22 OData BOMItemIsBulkMaterial | SAP SCHGT | I_BOMItem</td></tr><tr><td><code>is_backflush_enabled</code></td><td>boolean</td><td>null ok</td><td></td><td>#23 OData IsBackflushEnabled | SAP RGEKZ | I_BOMItem</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS ds1_bom_components (
+    ds1_id                            BIGSERIAL    PRIMARY KEY,
+    run_id                            BIGINT       NOT NULL REFERENCES job_run(run_id) ON DELETE CASCADE,
+    -- header fields #1-#11
+    material                          VARCHAR(40)  NOT NULL,   -- #1  MATNR
+    plant                             VARCHAR(4)   NOT NULL,   -- #2  WERKS
+    bill_of_material_variant_usage    VARCHAR(1)   NOT NULL,   -- #3  STLAN (always &#x27;1&#x27;)
+    bill_of_material                  VARCHAR(8)   NOT NULL,   -- #4  STLNR
+    bill_of_material_variant          VARCHAR(2)   NOT NULL,   -- #5  STLAL (01-99)
+    bom_version_status                VARCHAR(2),              -- #6  STLST
+    header_validity_start_date        DATE,                    -- #7  DATUV
+    bom_is_marked_for_deletion        BOOLEAN,                 -- #8  header deletion flag
+    bom_header_quantity_in_base_unit  NUMERIC(13,3),           -- #9  BMENG
+    bom_header_base_unit              VARCHAR(3),              -- #10 BMEIN
+    bom_header_text                   VARCHAR(40),             -- #11 STKTX
+    -- item fields #12-#23
+    bill_of_material_item_node_number VARCHAR(8)   NOT NULL,   -- #12 STLKN
+    bill_of_material_component        VARCHAR(40),             -- #13 IDNRK
+    component_quantity                NUMERIC(13,3),           -- #14 MENGE
+    component_unit                    VARCHAR(3),              -- #15 MEINS
+    bill_of_material_item_category    VARCHAR(1),              -- #16 POSTP (L/N/R/T)
+    validity_start_date               DATE,                    -- #17 DATUV (item)
+    validity_end_date                 DATE,                    -- #18 DATUB
+    is_marked_for_deletion            BOOLEAN,                 -- #19 LOEKZ
+    is_phantom_item                   BOOLEAN,                 -- #20 DUMPS
+    bom_item_is_costing_relevant      BOOLEAN,                 -- #21 SANKA
+    bom_item_is_bulk_material         BOOLEAN,                 -- #22 SCHGT
+    is_backflush_enabled              BOOLEAN                  -- #23 RGEKZ
+);
+CREATE INDEX IF NOT EXISTS ix_ds1_link ON ds1_bom_components
+    (run_id, material, plant, bill_of_material, bill_of_material_variant, bill_of_material_item_node_number);
+CREATE INDEX IF NOT EXISTS ix_ds1_variant   ON ds1_bom_components (material, plant, bill_of_material_variant);
+CREATE INDEX IF NOT EXISTS ix_ds1_component ON ds1_bom_components (bill_of_material_component);
+COMMENT ON TABLE ds1_bom_components IS &#x27;FDS Dataset 1 - Production BOM, 23 fields + run_id (API_BILL_OF_MATERIAL_SRV)&#x27;;</pre></div>
+</section>
+<section class="page" id="t-ds2_production_version">
+  <div class="k">Part B1 — FDS extraction tables</div>
+  <h2><code style="font-size:19px">ds2_production_version</code></h2>
+  <p class="lead">Dataset 2 — Production Version (12 fields) &nbsp; <span class="pill warn">Built · empty (waiting for BTP)</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>The link table: which BOM alternative and which recipe each production version uses, for which lot-size range and validity dates.</dd>
+    <dt>Where it is written</dt><dd>FDS v1.5 section 7.3, 13.3. API_PRODUCT_SRV → A_ProductionVersion.</dd>
+    <dt>Filled by</dt><dd>Future: BTP app, Call 2.</dd>
+    <dt>Read by</dt><dd>Future: joins ds1 (via BOM variant) and ds3 (via recipe group + counter).</dd>
+  </dl>
+  
+  <h3>Columns (13)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>run_id</code></td><td>bigint</td><td>NOT NULL</td><td>PK, FK → job_run</td><td></td></tr><tr><td><code>material</code></td><td>character varying(40)</td><td>NOT NULL</td><td>PK</td><td>#1 OData Material | joins to ds1</td></tr><tr><td><code>plant</code></td><td>character varying(4)</td><td>NOT NULL</td><td>PK</td><td>#2 OData Plant | joins to ds1</td></tr><tr><td><code>production_version</code></td><td>character varying(4)</td><td>NOT NULL</td><td>PK</td><td>#3 OData ProductionVersion | e.g. 0001, 0002</td></tr><tr><td><code>production_version_text</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>#4 OData ProductionVersionText</td></tr><tr><td><code>bill_of_material_variant</code></td><td>character varying(2)</td><td>null ok</td><td></td><td>#5 OData BillOfMaterialVariant | BOM alternative of this version, joins ds1.bill_of_material_variant</td></tr><tr><td><code>mfg_order_routing_group</code></td><td>character varying(8)</td><td>null ok</td><td></td><td>#6 OData MfgOrderRoutingGroup | recipe group PLNNR, primary key to ds3</td></tr><tr><td><code>mfg_order_routing_grp_counter</code></td><td>character varying(2)</td><td>null ok</td><td></td><td>#7 OData MfgOrderRoutingGrpCounter | recipe counter PLNAL, secondary key to ds3</td></tr><tr><td><code>minimum_lot_size_quantity</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>#8 OData MinimumLotSizeQuantity | min batch/lot size this version is valid for</td></tr><tr><td><code>maximum_lot_size_quantity</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>#9 OData MaximumLotSizeQuantity | max batch/lot size this version is valid for</td></tr><tr><td><code>production_version_valid_from</code></td><td>date</td><td>null ok</td><td></td><td>#10 OData ProductionVersionValidFrom | drives seasonal / alternate BOM selection</td></tr><tr><td><code>production_version_valid_to</code></td><td>date</td><td>null ok</td><td></td><td>#11 OData ProductionVersionValidTo</td></tr><tr><td><code>is_marked_for_deletion</code></td><td>boolean</td><td>null ok</td><td></td><td>#12 OData IsMarkedForDeletion | flagged in output, not excluded</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS ds2_production_version (
+    run_id                          BIGINT       NOT NULL REFERENCES job_run(run_id) ON DELETE CASCADE,
+    material                        VARCHAR(40)  NOT NULL,   -- #1  Material
+    plant                           VARCHAR(4)   NOT NULL,   -- #2  Plant
+    production_version              VARCHAR(4)   NOT NULL,   -- #3  ProductionVersion (0001, 0002 ...)
+    production_version_text         VARCHAR(40),             -- #4  ProductionVersionText
+    bill_of_material_variant        VARCHAR(2),              -- #5  BillOfMaterialVariant -&gt; ds1
+    mfg_order_routing_group         VARCHAR(8),              -- #6  MfgOrderRoutingGroup (PLNNR) -&gt; ds3
+    mfg_order_routing_grp_counter   VARCHAR(2),              -- #7  MfgOrderRoutingGrpCounter (PLNAL) -&gt; ds3
+    minimum_lot_size_quantity       NUMERIC(13,3),           -- #8
+    maximum_lot_size_quantity       NUMERIC(13,3),           -- #9
+    production_version_valid_from   DATE,                    -- #10
+    production_version_valid_to     DATE,                    -- #11
+    is_marked_for_deletion          BOOLEAN,                 -- #12 flagged, not excluded
+    PRIMARY KEY (run_id, material, plant, production_version)
+);
+CREATE INDEX IF NOT EXISTS ix_ds2_bom    ON ds2_production_version (material, plant, bill_of_material_variant);
+CREATE INDEX IF NOT EXISTS ix_ds2_recipe ON ds2_production_version (mfg_order_routing_group, mfg_order_routing_grp_counter);
+COMMENT ON TABLE ds2_production_version IS &#x27;FDS Dataset 2 - Production Version, 12 fields + run_id (API_PRODUCT_SRV / A_ProductionVersion)&#x27;;</pre></div>
+</section>
+<section class="page" id="t-ds3_master_recipe">
+  <div class="k">Part B1 — FDS extraction tables</div>
+  <h2><code style="font-size:19px">ds3_master_recipe</code></h2>
+  <p class="lead">Dataset 3 — Master Recipe (17 fields) &nbsp; <span class="pill warn">Built · empty (waiting for BTP)</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Recipe steps (operations) with work centre and standard duration, plus the component consumed at each step. Steps that consume nothing (e.g. QA testing) leave the component columns empty.</dd>
+    <dt>Where it is written</dt><dd>FDS v1.5 section 7.4, 13.4. API_MASTERRECIPE_0001 → A_MasterRecipeHeader (+ operations + components).</dd>
+    <dt>Filled by</dt><dd>Future: BTP app, Call 4.</dd>
+    <dt>Read by</dt><dd>Future: ML model; production-efficiency figures (hours, work centre).</dd>
+  </dl>
+  <div class="callout">Only valid for process-industry (PP-PI) plants. FDS open item OI-007: confirm each plant uses recipes, not routings.</div>
+  <h3>Columns (19)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>ds3_id</code></td><td>bigint</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>run_id</code></td><td>bigint</td><td>NOT NULL</td><td>FK → job_run</td><td></td></tr><tr><td><code>recipe_group</code></td><td>character varying(8)</td><td>NOT NULL</td><td></td><td>#1 OData RecipeGroup (header) | PLNNR, joins ds2.mfg_order_routing_group</td></tr><tr><td><code>recipe</code></td><td>character varying(2)</td><td>NOT NULL</td><td></td><td>#2 OData Recipe (header) | PLNAL, joins ds2.mfg_order_routing_grp_counter</td></tr><tr><td><code>recipe_desc</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>#3 OData RecipeDesc (header)</td></tr><tr><td><code>plant</code></td><td>character varying(4)</td><td>null ok</td><td></td><td>#4 OData Plant (header)</td></tr><tr><td><code>recipe_status</code></td><td>character varying(2)</td><td>null ok</td><td></td><td>#5 OData RecipeStatus (header) | 4 = released for order</td></tr><tr><td><code>valid_from</code></td><td>date</td><td>null ok</td><td></td><td>#6 OData ValidFrom (header)</td></tr><tr><td><code>base_quantity</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>#7 OData BaseQuantity (header)</td></tr><tr><td><code>base_unit</code></td><td>character varying(3)</td><td>null ok</td><td></td><td>#8 OData BaseUnit (header)</td></tr><tr><td><code>operation_group</code></td><td>character varying(8)</td><td>NOT NULL</td><td></td><td>#9 OData OperationGroup (operation)</td></tr><tr><td><code>operation_node</code></td><td>character varying(8)</td><td>NOT NULL</td><td></td><td>#10 OData OperationNode (operation)</td></tr><tr><td><code>operation_text</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>#11 OData OperationText (operation)</td></tr><tr><td><code>work_center</code></td><td>character varying(20)</td><td>null ok</td><td></td><td>#12 OData WorkCenter (operation)</td></tr><tr><td><code>standard_process_duration</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>#13 OData StandardProcessDuration (operation)</td></tr><tr><td><code>standard_process_duration_unit</code></td><td>character varying(3)</td><td>null ok</td><td></td><td>#14 OData StandardProcessDurationUnit (operation) | H or MIN</td></tr><tr><td><code>bill_of_material_component</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>#15 OData BillOfMaterialComponent (component allocation) | links to ds1</td></tr><tr><td><code>component_quantity</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>#16 OData ComponentQuantity (component allocation)</td></tr><tr><td><code>component_unit</code></td><td>character varying(3)</td><td>null ok</td><td></td><td>#17 OData ComponentUnit (component allocation)</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS ds3_master_recipe (
+    ds3_id                          BIGSERIAL    PRIMARY KEY,
+    run_id                          BIGINT       NOT NULL REFERENCES job_run(run_id) ON DELETE CASCADE,
+    recipe_group                    VARCHAR(8)   NOT NULL,   -- #1  RecipeGroup (PLNNR)
+    recipe                          VARCHAR(2)   NOT NULL,   -- #2  Recipe (PLNAL)
+    recipe_desc                     VARCHAR(40),             -- #3  RecipeDesc
+    plant                           VARCHAR(4),              -- #4  Plant
+    recipe_status                   VARCHAR(2),              -- #5  RecipeStatus (4 = released)
+    valid_from                      DATE,                    -- #6  ValidFrom
+    base_quantity                   NUMERIC(13,3),           -- #7  BaseQuantity
+    base_unit                       VARCHAR(3),              -- #8  BaseUnit
+    operation_group                 VARCHAR(8)   NOT NULL,   -- #9  OperationGroup
+    operation_node                  VARCHAR(8)   NOT NULL,   -- #10 OperationNode
+    operation_text                  VARCHAR(40),             -- #11 OperationText
+    work_center                     VARCHAR(20),             -- #12 WorkCenter
+    standard_process_duration       NUMERIC(13,3),           -- #13 StandardProcessDuration
+    standard_process_duration_unit  VARCHAR(3),              -- #14 H / MIN
+    bill_of_material_component      VARCHAR(40),             -- #15 -&gt; ds1 component
+    component_quantity              NUMERIC(13,3),           -- #16
+    component_unit                  VARCHAR(3)               -- #17
+);
+CREATE INDEX IF NOT EXISTS ix_ds3_recipe    ON ds3_master_recipe (run_id, recipe_group, recipe);
+CREATE INDEX IF NOT EXISTS ix_ds3_component ON ds3_master_recipe (bill_of_material_component);
+COMMENT ON TABLE ds3_master_recipe IS &#x27;FDS Dataset 3 - Master Recipe, 17 fields + run_id (API_MASTERRECIPE_0001). OI-007: only valid for PP-PI plants.&#x27;;</pre></div>
+</section>
+<section class="page" id="t-sap_material">
+  <div class="k">Part B2 — Draft model-feature tables</div>
+  <h2><code style="font-size:19px">sap_material</code></h2>
+  <p class="lead">DRAFT — Material master (MARA + MAKT) &nbsp; <span class="pill bad">Draft · empty</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>One row per material: description, type (FERT / HALB / ROH / VERP), group, units, weights, batch-managed flag, deletion flag.</dd>
+    <dt>Where it is written</dt><dd>SAP_Data_Reference… workbook → sheet &#x27;Field Master List&#x27; (tables MARA, MAKT).</dd>
+    <dt>Filled by</dt><dd>Future: extraction method not decided (FDS open item OI-002).</dd>
+    <dt>Read by</dt><dd>Future: join key MATNR for every other dataset.</dd>
+  </dl>
+  <div class="callout">Subset of the workbook&#x27;s fields. Types assumed.</div>
+  <h3>Columns (16)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>matnr</code></td><td>character varying(18)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>maktx</code></td><td>character varying(40)</td><td>null ok</td><td></td><td>MAKT description (EN)</td></tr><tr><td><code>mtart</code></td><td>character varying(4)</td><td>null ok</td><td></td><td>material type FERT / HALB / ROH / VERP</td></tr><tr><td><code>matkl</code></td><td>character varying(9)</td><td>null ok</td><td></td><td>material group</td></tr><tr><td><code>spart</code></td><td>character varying(2)</td><td>null ok</td><td></td><td>division</td></tr><tr><td><code>meins</code></td><td>character varying(3)</td><td>null ok</td><td></td><td>base unit</td></tr><tr><td><code>brgew</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>gross weight</td></tr><tr><td><code>ntgew</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>net weight</td></tr><tr><td><code>gewei</code></td><td>character varying(3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>volum</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>voleh</code></td><td>character varying(3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>xchpf</code></td><td>boolean</td><td>null ok</td><td></td><td>batch managed</td></tr><tr><td><code>prdha</code></td><td>character varying(18)</td><td>null ok</td><td></td><td>product hierarchy</td></tr><tr><td><code>lvorm</code></td><td>boolean</td><td>null ok</td><td></td><td>deletion flag</td></tr><tr><td><code>ersda</code></td><td>date</td><td>null ok</td><td></td><td></td></tr><tr><td><code>stoff</code></td><td>character varying(18)</td><td>null ok</td><td></td><td>hazardous material number</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS sap_material (
+    matnr  VARCHAR(18) PRIMARY KEY,
+    maktx  VARCHAR(40),            -- MAKT description (EN)
+    mtart  VARCHAR(4),             -- material type FERT / HALB / ROH / VERP
+    matkl  VARCHAR(9),             -- material group
+    spart  VARCHAR(2),             -- division
+    meins  VARCHAR(3),             -- base unit
+    brgew  NUMERIC(13,3),          -- gross weight
+    ntgew  NUMERIC(13,3),          -- net weight
+    gewei  VARCHAR(3),
+    volum  NUMERIC(13,3),
+    voleh  VARCHAR(3),
+    xchpf  BOOLEAN,                -- batch managed
+    prdha  VARCHAR(18),            -- product hierarchy
+    lvorm  BOOLEAN,                -- deletion flag
+    ersda  DATE,
+    stoff  VARCHAR(18)             -- hazardous material number
+);</pre></div>
+</section>
+<section class="page" id="t-sap_material_plant">
+  <div class="k">Part B2 — Draft model-feature tables</div>
+  <h2><code style="font-size:19px">sap_material_plant</code></h2>
+  <p class="lead">DRAFT — Material by plant (MARC) &nbsp; <span class="pill bad">Draft · empty</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Per material and plant: MRP type and controller, lot sizes, safety stock, lead times, procurement type (in-house / external), backflush.</dd>
+    <dt>Where it is written</dt><dd>Workbook → &#x27;Field Master List&#x27; (MARC).</dd>
+    <dt>Filled by</dt><dd>Future.</dd>
+    <dt>Read by</dt><dd>Future.</dd>
+  </dl>
+  <div class="callout">The FDS only uses MARC fields as filters (procurement type, plant, MRP type) and does not store them — FDS open item OI-009.</div>
+  <h3>Columns (19)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>matnr</code></td><td>character varying(18)</td><td>NOT NULL</td><td>PK, FK → sap_material</td><td></td></tr><tr><td><code>werks</code></td><td>character varying(4)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>dismm</code></td><td>character varying(2)</td><td>null ok</td><td></td><td>MRP type</td></tr><tr><td><code>dispo</code></td><td>character varying(3)</td><td>null ok</td><td></td><td>MRP controller</td></tr><tr><td><code>disls</code></td><td>character varying(2)</td><td>null ok</td><td></td><td>lot-sizing procedure</td></tr><tr><td><code>bstmi</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>min lot size</td></tr><tr><td><code>bstma</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>max lot size</td></tr><tr><td><code>bstfe</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>fixed lot size</td></tr><tr><td><code>minbe</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>reorder point</td></tr><tr><td><code>eisbe</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>safety stock</td></tr><tr><td><code>plifz</code></td><td>smallint</td><td>null ok</td><td></td><td>planned delivery days</td></tr><tr><td><code>dzeit</code></td><td>smallint</td><td>null ok</td><td></td><td>in-house production days</td></tr><tr><td><code>wzeit</code></td><td>smallint</td><td>null ok</td><td></td><td>total replenishment lead time</td></tr><tr><td><code>beskz</code></td><td>character varying(1)</td><td>null ok</td><td></td><td>procurement type E / F / X</td></tr><tr><td><code>sobsl</code></td><td>character varying(2)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>rgekz</code></td><td>character varying(1)</td><td>null ok</td><td></td><td>backflush indicator</td></tr><tr><td><code>lgpro</code></td><td>character varying(4)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>fevor</code></td><td>character varying(3)</td><td>null ok</td><td></td><td>production scheduler</td></tr><tr><td><code>qmpur</code></td><td>boolean</td><td>null ok</td><td></td><td>QM active in procurement</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS sap_material_plant (
+    matnr  VARCHAR(18) NOT NULL REFERENCES sap_material(matnr),
+    werks  VARCHAR(4)  NOT NULL,
+    dismm  VARCHAR(2),             -- MRP type
+    dispo  VARCHAR(3),             -- MRP controller
+    disls  VARCHAR(2),             -- lot-sizing procedure
+    bstmi  NUMERIC(13,3),          -- min lot size
+    bstma  NUMERIC(13,3),          -- max lot size
+    bstfe  NUMERIC(13,3),          -- fixed lot size
+    minbe  NUMERIC(13,3),          -- reorder point
+    eisbe  NUMERIC(13,3),          -- safety stock
+    plifz  SMALLINT,               -- planned delivery days
+    dzeit  SMALLINT,               -- in-house production days
+    wzeit  SMALLINT,               -- total replenishment lead time
+    beskz  VARCHAR(1),             -- procurement type E / F / X
+    sobsl  VARCHAR(2),
+    rgekz  VARCHAR(1),             -- backflush indicator
+    lgpro  VARCHAR(4),
+    fevor  VARCHAR(3),             -- production scheduler
+    qmpur  BOOLEAN,               -- QM active in procurement
+    PRIMARY KEY (matnr, werks)
+);</pre></div>
+</section>
+<section class="page" id="t-sap_material_valuation">
+  <div class="k">Part B2 — Draft model-feature tables</div>
+  <h2><code style="font-size:19px">sap_material_valuation</code></h2>
+  <p class="lead">DRAFT — Valuation / cost (MBEW) &nbsp; <span class="pill bad">Draft · empty</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Standard price, moving-average price, price control, price unit, total stock value per material and valuation area.</dd>
+    <dt>Where it is written</dt><dd>Workbook → &#x27;Field Master List&#x27; (MBEW) and &#x27;Extraction Notes&#x27; (which cost field is meaningful).</dd>
+    <dt>Filled by</dt><dd>Future.</dd>
+    <dt>Read by</dt><dd>Future: real material cost.</dd>
+  </dl>
+  <div class="callout">Important: material cost in the paint order data is 0 on every order, so the model will need this table (or the BOM prices) for real cost.</div>
+  <h3>Columns (10)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>matnr</code></td><td>character varying(18)</td><td>NOT NULL</td><td>PK, FK → sap_material</td><td></td></tr><tr><td><code>bwkey</code></td><td>character varying(4)</td><td>NOT NULL</td><td>PK</td><td>valuation area (= plant)</td></tr><tr><td><code>bwtar</code></td><td>character varying(10)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>vprsv</code></td><td>character varying(1)</td><td>null ok</td><td></td><td>price control S / V</td></tr><tr><td><code>stprs</code></td><td>numeric(15,4)</td><td>null ok</td><td></td><td>standard price</td></tr><tr><td><code>verpr</code></td><td>numeric(15,4)</td><td>null ok</td><td></td><td>moving average price</td></tr><tr><td><code>peinh</code></td><td>integer</td><td>null ok</td><td></td><td>price unit</td></tr><tr><td><code>bklas</code></td><td>character varying(4)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>lbkum</code></td><td>numeric(15,3)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>salk3</code></td><td>numeric(18,2)</td><td>null ok</td><td></td><td></td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS sap_material_valuation (
+    matnr  VARCHAR(18) NOT NULL REFERENCES sap_material(matnr),
+    bwkey  VARCHAR(4)  NOT NULL,   -- valuation area (= plant)
+    bwtar  VARCHAR(10) NOT NULL DEFAULT &#x27;&#x27;,
+    vprsv  VARCHAR(1),             -- price control S / V
+    stprs  NUMERIC(15,4),          -- standard price
+    verpr  NUMERIC(15,4),          -- moving average price
+    peinh  INTEGER,                -- price unit
+    bklas  VARCHAR(4),
+    lbkum  NUMERIC(15,3),
+    salk3  NUMERIC(18,2),
+    PRIMARY KEY (matnr, bwkey, bwtar)
+);</pre></div>
+</section>
+<section class="page" id="t-sap_material_stock">
+  <div class="k">Part B2 — Draft model-feature tables</div>
+  <h2><code style="font-size:19px">sap_material_stock</code></h2>
+  <p class="lead">DRAFT — Stock by storage location (MARD) &nbsp; <span class="pill bad">Draft · empty</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Unrestricted, quality-inspection and blocked stock per material, plant and storage location.</dd>
+    <dt>Where it is written</dt><dd>Workbook → &#x27;Field Master List&#x27; (MARD).</dd>
+    <dt>Filled by</dt><dd>Future.</dd>
+    <dt>Read by</dt><dd>Future: availability of raw materials.</dd>
+  </dl>
+  
+  <h3>Columns (6)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>matnr</code></td><td>character varying(18)</td><td>NOT NULL</td><td>PK, FK → sap_material</td><td></td></tr><tr><td><code>werks</code></td><td>character varying(4)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>lgort</code></td><td>character varying(4)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>labst</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>unrestricted</td></tr><tr><td><code>insme</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>quality inspection</td></tr><tr><td><code>speme</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>blocked</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS sap_material_stock (
+    matnr  VARCHAR(18) NOT NULL REFERENCES sap_material(matnr),
+    werks  VARCHAR(4)  NOT NULL,
+    lgort  VARCHAR(4)  NOT NULL,
+    labst  NUMERIC(13,3),          -- unrestricted
+    insme  NUMERIC(13,3),          -- quality inspection
+    speme  NUMERIC(13,3),          -- blocked
+    PRIMARY KEY (matnr, werks, lgort)
+);</pre></div>
+</section>
+<section class="page" id="t-sap_order_confirmation">
+  <div class="k">Part B2 — Draft model-feature tables</div>
+  <h2><code style="font-size:19px">sap_order_confirmation</code></h2>
+  <p class="lead">DRAFT — Order confirmations (AFRU) &nbsp; <span class="pill bad">Draft · empty</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Actual start / end, yield, scrap and work centre of each order confirmation.</dd>
+    <dt>Where it is written</dt><dd>Workbook → &#x27;Transactional Data&#x27; / &#x27;Transactional Tables Explained&#x27; (AFRU).</dd>
+    <dt>Filled by</dt><dd>Future.</dd>
+    <dt>Read by</dt><dd>Future: planned-vs-actual timing and real rework / delay signals.</dd>
+  </dl>
+  
+  <h3>Columns (10)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>conf_id</code></td><td>bigint</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>aufnr</code></td><td>character(12)</td><td>NOT NULL</td><td></td><td></td></tr><tr><td><code>rmzhl</code></td><td>character varying(8)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>isdd</code></td><td>date</td><td>null ok</td><td></td><td>actual start</td></tr><tr><td><code>isdz</code></td><td>time without time zone</td><td>null ok</td><td></td><td></td></tr><tr><td><code>iedd</code></td><td>date</td><td>null ok</td><td></td><td>actual end</td></tr><tr><td><code>iedz</code></td><td>time without time zone</td><td>null ok</td><td></td><td></td></tr><tr><td><code>gamng</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>yield</td></tr><tr><td><code>xmnga</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>scrap</td></tr><tr><td><code>arbpl</code></td><td>character varying(8)</td><td>null ok</td><td></td><td>work center</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS sap_order_confirmation (
+    conf_id BIGSERIAL PRIMARY KEY,
+    aufnr  CHAR(12)    NOT NULL,
+    rmzhl  VARCHAR(8),
+    isdd   DATE, isdz TIME,        -- actual start
+    iedd   DATE, iedz TIME,        -- actual end
+    gamng  NUMERIC(13,3),          -- yield
+    xmnga  NUMERIC(13,3),          -- scrap
+    arbpl  VARCHAR(8)              -- work center
+);
+CREATE INDEX IF NOT EXISTS ix_conf_aufnr ON sap_order_confirmation (aufnr);</pre></div>
+</section>
+<section class="page" id="t-sap_order_component">
+  <div class="k">Part B2 — Draft model-feature tables</div>
+  <h2><code style="font-size:19px">sap_order_component</code></h2>
+  <p class="lead">DRAFT — Order component reservations (RESB) &nbsp; <span class="pill bad">Draft · empty</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>Required versus withdrawn quantity of each component on an order.</dd>
+    <dt>Where it is written</dt><dd>Workbook → &#x27;Transactional Data&#x27; (RESB).</dd>
+    <dt>Filled by</dt><dd>Future.</dd>
+    <dt>Read by</dt><dd>Future: what was really consumed vs the BOM.</dd>
+  </dl>
+  
+  <h3>Columns (6)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>rsnum</code></td><td>character varying(10)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>rspos</code></td><td>character varying(4)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>aufnr</code></td><td>character(12)</td><td>null ok</td><td></td><td></td></tr><tr><td><code>matnr</code></td><td>character varying(18)</td><td>null ok</td><td></td><td>component</td></tr><tr><td><code>bdmng</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>required qty</td></tr><tr><td><code>enmng</code></td><td>numeric(13,3)</td><td>null ok</td><td></td><td>withdrawn qty</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS sap_order_component (
+    rsnum  VARCHAR(10) NOT NULL,
+    rspos  VARCHAR(4)  NOT NULL,
+    aufnr  CHAR(12),
+    matnr  VARCHAR(18),            -- component
+    bdmng  NUMERIC(13,3),          -- required qty
+    enmng  NUMERIC(13,3),          -- withdrawn qty
+    PRIMARY KEY (rsnum, rspos)
+);
+CREATE INDEX IF NOT EXISTS ix_comp_aufnr ON sap_order_component (aufnr);</pre></div>
+</section>
+<section class="page" id="t-sap_batch">
+  <div class="k">Part B2 — Draft model-feature tables</div>
+  <h2><code style="font-size:19px">sap_batch</code></h2>
+  <p class="lead">DRAFT — Batch master (MCHA) &nbsp; <span class="pill bad">Draft · empty</span> <span class="pill info">0 rows now</span></p>
+  <dl class="kv">
+    <dt>What it is for</dt><dd>One row per physical batch: production date, expiry and last goods-receipt date.</dd>
+    <dt>Where it is written</dt><dd>Workbook → &#x27;Companion Data (Required)&#x27; (MCHA).</dd>
+    <dt>Filled by</dt><dd>Future.</dd>
+    <dt>Read by</dt><dd>Future: lot-level model features.</dd>
+  </dl>
+  
+  <h3>Columns (6)</h3>
+  <div class="tw"><table><thead><tr><th>Column</th><th>Type</th><th>Null</th><th>Key</th><th>Meaning / source field</th></tr></thead>
+  <tbody><tr><td><code>matnr</code></td><td>character varying(18)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>werks</code></td><td>character varying(4)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>charg</code></td><td>character varying(10)</td><td>NOT NULL</td><td>PK</td><td></td></tr><tr><td><code>hsdat</code></td><td>date</td><td>null ok</td><td></td><td>production date</td></tr><tr><td><code>vfdat</code></td><td>date</td><td>null ok</td><td></td><td>expiry</td></tr><tr><td><code>lwedt</code></td><td>date</td><td>null ok</td><td></td><td>last goods receipt</td></tr></tbody></table></div>
+  <h3>DDL (exact, from db/schema.sql)</h3>
+  <div><button class="copy">Copy DDL</button><pre>CREATE TABLE IF NOT EXISTS sap_batch (
+    matnr  VARCHAR(18) NOT NULL,
+    werks  VARCHAR(4)  NOT NULL,
+    charg  VARCHAR(10) NOT NULL,
+    hsdat  DATE,                   -- production date
+    vfdat  DATE,                   -- expiry
+    lwedt  DATE,                   -- last goods receipt
+    PRIMARY KEY (matnr, werks, charg)
+);</pre></div>
+</section>
+<section class="page" id="alldll">
+  <h2>7. Complete DDL</h2><p class="lead">The full contents of <code>db/schema.sql</code> — run it on any empty PostgreSQL 15 database to create everything.</p>
+  <div><button class="copy">Copy DDL</button><pre>-- =====================================================================
+-- BOM / Paint-data database  (PostgreSQL 15)
+-- Idempotent: safe to run on every start (all objects use IF NOT EXISTS).
+--
+-- PART A   Paint order cost &amp; rework      -&gt; data we HAVE today (loaded by the app)
+-- PART B1  FDS extraction tables (ds1/ds2/ds3) -&gt; exact FDS v1.5 field lists, empty until BTP extraction
+-- PART B2  Draft model-feature tables    -&gt; from the SAP Data Reference workbook, NOT in the FDS
+--
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- PART A0. Load log  (one row per file + sheet)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS etl_ingest_batch (
+    batch_id      BIGSERIAL    PRIMARY KEY,
+    dataset       VARCHAR(20)  NOT NULL
+                  CHECK (dataset IN (&#x27;ORDER_BASE&#x27;,&#x27;ORDER_REWORK&#x27;,&#x27;ORDER_STATUS&#x27;,&#x27;COST_REPORT&#x27;,&#x27;UNKNOWN&#x27;)),
+    source_file   VARCHAR(255) NOT NULL,
+    source_sheet  VARCHAR(50)  NOT NULL DEFAULT &#x27;&#x27;,
+    file_sha256   CHAR(64)     NOT NULL,
+    rows_in_file  INTEGER      NOT NULL DEFAULT 0,
+    rows_loaded   INTEGER      NOT NULL DEFAULT 0,
+    rows_rejected INTEGER      NOT NULL DEFAULT 0,
+    status        VARCHAR(10)  NOT NULL DEFAULT &#x27;RUNNING&#x27;
+                  CHECK (status IN (&#x27;RUNNING&#x27;,&#x27;SUCCESS&#x27;,&#x27;FAILED&#x27;,&#x27;SKIPPED&#x27;)),
+    message       TEXT,
+    started_at    TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    finished_at   TIMESTAMPTZ
+);
+-- the same file+sheet content can only be loaded once successfully
+CREATE UNIQUE INDEX IF NOT EXISTS ux_batch_once
+    ON etl_ingest_batch (dataset, file_sha256, source_sheet)
+    WHERE status IN (&#x27;RUNNING&#x27;,&#x27;SUCCESS&#x27;);
+
+-- rows we refused to load (first 1000 per batch), with the reason
+CREATE TABLE IF NOT EXISTS etl_reject_row (
+    reject_id  BIGSERIAL PRIMARY KEY,
+    batch_id   BIGINT    NOT NULL REFERENCES etl_ingest_batch(batch_id) ON DELETE CASCADE,
+    row_number INTEGER   NOT NULL,
+    reason     TEXT      NOT NULL,
+    raw_row    TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_reject_batch ON etl_reject_row (batch_id);
+
+-- ---------------------------------------------------------------------
+-- PART A1. STG_ORDER_BASE   (SAP AUFK + AFKO + AFPO + MAKT)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS stg_order_base (
+    aufnr                CHAR(12)      PRIMARY KEY,     -- process order, zero-padded
+    autyp                SMALLINT      NOT NULL,        -- 40 = process order
+    werks                VARCHAR(4)    NOT NULL,        -- plant (US01 / US18)
+    objnr                VARCHAR(22)   NOT NULL UNIQUE, -- &#x27;OR&#x27;+aufnr, status key
+    matnr                VARCHAR(18)   NOT NULL,        -- material / SKU
+    maktx                VARCHAR(40),                   -- material description
+    gstrp                DATE          NOT NULL,        -- basic start date
+    batch_size_quantity  NUMERIC(15,3) NOT NULL,        -- (= PSMNG in the file)
+    base_unit_of_measure VARCHAR(3)    NOT NULL,        -- LB, KG ...
+    material_cost        NUMERIC(18,3) NOT NULL DEFAULT 0,
+    labor_cost           NUMERIC(18,3) NOT NULL DEFAULT 0,
+    batch_id             BIGINT        NOT NULL REFERENCES etl_ingest_batch(batch_id)
+);
+CREATE INDEX IF NOT EXISTS ix_stg_base_matnr      ON stg_order_base (matnr);
+CREATE INDEX IF NOT EXISTS ix_stg_base_werks_gstrp ON stg_order_base (werks, gstrp);
+
+-- ---------------------------------------------------------------------
+-- PART A2. STG_ORDER_REWORK  (SAP MSEG + MKPF, movement type 261, raw rows)
+--          The extract has no line item (ZEILE) -&gt; surrogate key.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS stg_order_rework (
+    rework_id  BIGSERIAL     PRIMARY KEY,
+    aufnr      CHAR(12)      NOT NULL,
+    mblnr      VARCHAR(10)   NOT NULL,        -- material document
+    mjahr      SMALLINT      NOT NULL,        -- document year
+    dmbtr      NUMERIC(15,2) NOT NULL,        -- amount in local currency
+    bwart      VARCHAR(3)    NOT NULL,        -- movement type (&#x27;261&#x27;)
+    budat      DATE          NOT NULL,        -- posting date
+    cpudt      DATE,
+    cputm      TIME,
+    xblnr      VARCHAR(16),
+    tcode2     VARCHAR(20),
+    vbeln_im   VARCHAR(10),
+    vbelp_im   INTEGER,
+    batch_id   BIGINT        NOT NULL REFERENCES etl_ingest_batch(batch_id)
+);
+CREATE INDEX IF NOT EXISTS ix_stg_rework_aufnr       ON stg_order_rework (aufnr);
+CREATE INDEX IF NOT EXISTS ix_stg_rework_aufnr_mblnr ON stg_order_rework (aufnr, mblnr);
+CREATE INDEX IF NOT EXISTS ix_stg_rework_budat       ON stg_order_rework (budat);
+
+-- ---------------------------------------------------------------------
+-- PART A3. STG_ORDER_STATUS  (SAP JEST + JCDS, status I0012 = Delivered)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS stg_order_status (
+    objnr            VARCHAR(22) PRIMARY KEY,
+    dlv_status_date  DATE        NOT NULL,
+    batch_id         BIGINT      NOT NULL REFERENCES etl_ingest_batch(batch_id)
+);
+
+-- ---------------------------------------------------------------------
+-- PART A4. CONSOLIDATED_ORDER_SUMMARY  (SQL Step 4 - rebuilt after loads)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS consolidated_order_summary (
+    process_order_number    CHAR(12)      PRIMARY KEY,
+    plant_id                VARCHAR(4)    NOT NULL,
+    material_sku            VARCHAR(18)   NOT NULL,
+    material_description    VARCHAR(40),
+    base_unit_of_measure    VARCHAR(3),
+    batch_size_quantity     NUMERIC(15,3) NOT NULL,
+    number_of_rework_cycles INTEGER       NOT NULL DEFAULT 0,
+    rework_duration_hours   INTEGER       NOT NULL DEFAULT 0,   -- cycles x 48 (client assumption)
+    standard_cost           NUMERIC(18,6),                      -- material_cost / batch size
+    material_cost           NUMERIC(18,3) NOT NULL DEFAULT 0,
+    labor_cost              NUMERIC(18,3) NOT NULL DEFAULT 0,
+    total_standard_cost     NUMERIC(18,3) NOT NULL DEFAULT 0,
+    total_rework_cost       NUMERIC(18,2) NOT NULL DEFAULT 0,
+    ai_projected_savings    NUMERIC(18,2) NOT NULL DEFAULT 0,   -- 30% of rework cost
+    dlv_status_date         DATE,                               -- NULL = not delivered
+    refreshed_at            TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS ix_cons_material ON consolidated_order_summary (material_sku);
+CREATE INDEX IF NOT EXISTS ix_cons_plant    ON consolidated_order_summary (plant_id);
+CREATE INDEX IF NOT EXISTS ix_cons_dlv      ON consolidated_order_summary (dlv_status_date);
+
+-- ---------------------------------------------------------------------
+-- PART A5. REF_COST_REPORT  (client&#x27;s own &quot;Cost Report&quot; - used only to
+--          check that our calculated summary matches theirs)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS ref_cost_report (
+    aufnr                   CHAR(12)      PRIMARY KEY,
+    matnr                   VARCHAR(18),
+    werks                   VARCHAR(4),
+    maktx                   VARCHAR(40),
+    autyp                   SMALLINT,
+    objnr                   VARCHAR(22),
+    dlv_status_date         DATE,
+    report_year             SMALLINT,
+    batch_size_quantity     NUMERIC(15,3),
+    base_unit_of_measure    VARCHAR(3),
+    number_of_rework_cycles INTEGER,          -- NULL in the file when there is none
+    rework_duration_hours   INTEGER,
+    standard_cost           NUMERIC(18,6),
+    material_cost           NUMERIC(18,3),
+    labor_cost              NUMERIC(18,3),
+    total_standard_cost     NUMERIC(18,3),
+    total_rework_cost       NUMERIC(18,2),
+    ai_projected_savings    NUMERIC(18,2),
+    batch_id                BIGINT        NOT NULL REFERENCES etl_ingest_batch(batch_id)
+);
+
+
+-- =====================================================================
+-- PART B1. FDS extraction tables  (SAP BTP app output)
+--
+-- Source: FDS-PP-BOM-001 v1.5 &quot;SAP Production BOM Extraction with Alternate Versions&quot;
+--   section 12.4  Storage Design  -&gt; job_run, t_sel_variant, ds1/ds2/ds3
+--   section 7.2   Dataset 1 (23 fields)   section 7.3  Dataset 2 (12 fields)
+--   section 7.4   Dataset 3 (17 fields)   section 13   sample output (value formats)
+--
+-- Column names are the FDS OData property names in snake_case.
+-- The OData property, SAP field and source view of every column are in COMMENT ON COLUMN.
+-- Types/lengths are NOT stated in the FDS: they are standard S/4HANA lengths chosen
+-- from the FDS sample values (e.g. material 40 chars, BOM number 8, plant 4).
+-- Tables stay empty until the BTP extraction runs or an equivalent file is loaded.
+-- =====================================================================
+
+-- Saved UI selections (FDS 6.3 / 12.4: T_SEL_VARIANT)
+CREATE TABLE IF NOT EXISTS t_sel_variant (
+    variant_id     VARCHAR(40)  PRIMARY KEY,
+    owner          VARCHAR(80),
+    created_at     TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    changed_at     TIMESTAMPTZ,
+    selection_json JSONB        NOT NULL,   -- plants, materials, materialTypes, mrpTypes,
+                                            -- procurementTypes, excludeMaterialDeleted, bomStatus,
+                                            -- validityDate, includeDeletedBoms
+    frequency      VARCHAR(10)  NOT NULL DEFAULT &#x27;ON_DEMAND&#x27;
+                   CHECK (frequency IN (&#x27;ON_DEMAND&#x27;,&#x27;DAILY&#x27;,&#x27;WEEKLY&#x27;,&#x27;MONTHLY&#x27;))
+);
+
+-- One row per extraction run (FDS 12.4: job_run)
+CREATE TABLE IF NOT EXISTS job_run (
+    run_id              BIGSERIAL    PRIMARY KEY,
+    variant_id          VARCHAR(40),                -- no FK: a run keeps its own snapshot (BR-015)
+    selection_snapshot  JSONB        NOT NULL,      -- filters used for THIS run
+    triggered_at        TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    completed_at        TIMESTAMPTZ,
+    status              VARCHAR(10)  NOT NULL DEFAULT &#x27;RUNNING&#x27;
+                        CHECK (status IN (&#x27;RUNNING&#x27;,&#x27;COMPLETE&#x27;,&#x27;FAILED&#x27;)),
+    materials_total     INTEGER,
+    materials_processed INTEGER      NOT NULL DEFAULT 0,
+    message             TEXT                         -- added: reason when status = FAILED
+);
+
+-- ---------------------------------------------------------------------
+-- DATASET 1  Production BOM  (FDS 7.2, 23 fields, + run_id)
+-- One row per Material x Plant x BOM alternative x BOM item node.
+-- API_BILL_OF_MATERIAL_SRV  A_BillOfMaterial + $expand to_BillOfMaterialItem
+-- Not unique-constrained on the link key: ECM / change numbers are out of scope (OI-001),
+-- so the same item node may appear with different validity dates.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS ds1_bom_components (
+    ds1_id                            BIGSERIAL    PRIMARY KEY,
+    run_id                            BIGINT       NOT NULL REFERENCES job_run(run_id) ON DELETE CASCADE,
+    -- header fields #1-#11
+    material                          VARCHAR(40)  NOT NULL,   -- #1  MATNR
+    plant                             VARCHAR(4)   NOT NULL,   -- #2  WERKS
+    bill_of_material_variant_usage    VARCHAR(1)   NOT NULL,   -- #3  STLAN (always &#x27;1&#x27;)
+    bill_of_material                  VARCHAR(8)   NOT NULL,   -- #4  STLNR
+    bill_of_material_variant          VARCHAR(2)   NOT NULL,   -- #5  STLAL (01-99)
+    bom_version_status                VARCHAR(2),              -- #6  STLST
+    header_validity_start_date        DATE,                    -- #7  DATUV
+    bom_is_marked_for_deletion        BOOLEAN,                 -- #8  header deletion flag
+    bom_header_quantity_in_base_unit  NUMERIC(13,3),           -- #9  BMENG
+    bom_header_base_unit              VARCHAR(3),              -- #10 BMEIN
+    bom_header_text                   VARCHAR(40),             -- #11 STKTX
+    -- item fields #12-#23
+    bill_of_material_item_node_number VARCHAR(8)   NOT NULL,   -- #12 STLKN
+    bill_of_material_component        VARCHAR(40),             -- #13 IDNRK
+    component_quantity                NUMERIC(13,3),           -- #14 MENGE
+    component_unit                    VARCHAR(3),              -- #15 MEINS
+    bill_of_material_item_category    VARCHAR(1),              -- #16 POSTP (L/N/R/T)
+    validity_start_date               DATE,                    -- #17 DATUV (item)
+    validity_end_date                 DATE,                    -- #18 DATUB
+    is_marked_for_deletion            BOOLEAN,                 -- #19 LOEKZ
+    is_phantom_item                   BOOLEAN,                 -- #20 DUMPS
+    bom_item_is_costing_relevant      BOOLEAN,                 -- #21 SANKA
+    bom_item_is_bulk_material         BOOLEAN,                 -- #22 SCHGT
+    is_backflush_enabled              BOOLEAN                  -- #23 RGEKZ
+);
+CREATE INDEX IF NOT EXISTS ix_ds1_link ON ds1_bom_components
+    (run_id, material, plant, bill_of_material, bill_of_material_variant, bill_of_material_item_node_number);
+CREATE INDEX IF NOT EXISTS ix_ds1_variant   ON ds1_bom_components (material, plant, bill_of_material_variant);
+CREATE INDEX IF NOT EXISTS ix_ds1_component ON ds1_bom_components (bill_of_material_component);
+
+COMMENT ON TABLE ds1_bom_components IS &#x27;FDS Dataset 1 - Production BOM, 23 fields + run_id (API_BILL_OF_MATERIAL_SRV)&#x27;;
+COMMENT ON COLUMN ds1_bom_components.material                          IS &#x27;#1 OData Material | SAP MATNR | I_BOMHeader | finished/header material&#x27;;
+COMMENT ON COLUMN ds1_bom_components.plant                             IS &#x27;#2 OData Plant | SAP WERKS | I_BOMHeader&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bill_of_material_variant_usage    IS &#x27;#3 OData BillOfMaterialVariantUsage | SAP STLAN | I_BOMHeader | always 1 = Production&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bill_of_material                  IS &#x27;#4 OData BillOfMaterial | SAP STLNR | I_BOMHeader | BOM internal number&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bill_of_material_variant          IS &#x27;#5 OData BillOfMaterialVariant | SAP STLAL | I_BOMHeader | alternate BOM 01-99&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bom_version_status                IS &#x27;#6 OData BOMVersionStatus | SAP STLST | I_BOMHeader | 01=Active, 02=Inactive&#x27;;
+COMMENT ON COLUMN ds1_bom_components.header_validity_start_date        IS &#x27;#7 OData HeaderValidityStartDate | SAP DATUV | I_BOMHeader&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bom_is_marked_for_deletion        IS &#x27;#8 OData BOMIsMarkedForDeletion | SAP LKENZ (as written in the FDS) | I_BOMHeader&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bom_header_quantity_in_base_unit  IS &#x27;#9 OData BOMHeaderQuantityInBaseUnit | SAP BMENG | I_BOMHeader | reference qty for component qty&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bom_header_base_unit              IS &#x27;#10 OData BOMHeaderBaseUnit | SAP BMEIN | I_BOMHeader&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bom_header_text                   IS &#x27;#11 OData BOMHeaderText | SAP STKTX | I_BOMHeader&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bill_of_material_item_node_number IS &#x27;#12 OData BillOfMaterialItemNodeNumber | SAP STLKN | I_BOMItem&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bill_of_material_component        IS &#x27;#13 OData BillOfMaterialComponent | SAP IDNRK | I_BOMItem | component / raw material&#x27;;
+COMMENT ON COLUMN ds1_bom_components.component_quantity                IS &#x27;#14 OData ComponentQuantity | SAP MENGE | I_BOMItem | per header base quantity&#x27;;
+COMMENT ON COLUMN ds1_bom_components.component_unit                    IS &#x27;#15 OData ComponentUnit | SAP MEINS | I_BOMItem&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bill_of_material_item_category    IS &#x27;#16 OData BillOfMaterialItemCategory | SAP POSTP | I_BOMItem | L=Stock N=Non-stock R=Variable-size T=Text&#x27;;
+COMMENT ON COLUMN ds1_bom_components.validity_start_date               IS &#x27;#17 OData ValidityStartDate | SAP DATUV | I_BOMItem | used to pick the component version active on a date&#x27;;
+COMMENT ON COLUMN ds1_bom_components.validity_end_date                 IS &#x27;#18 OData ValidityEndDate | SAP DATUB | I_BOMItem&#x27;;
+COMMENT ON COLUMN ds1_bom_components.is_marked_for_deletion            IS &#x27;#19 OData IsMarkedForDeletion | SAP LOEKZ | I_BOMItem&#x27;;
+COMMENT ON COLUMN ds1_bom_components.is_phantom_item                   IS &#x27;#20 OData IsPhantomItem | SAP DUMPS | I_BOMItem&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bom_item_is_costing_relevant      IS &#x27;#21 OData BOMItemIsCostingRelevant | SAP SANKA | I_BOMItem&#x27;;
+COMMENT ON COLUMN ds1_bom_components.bom_item_is_bulk_material         IS &#x27;#22 OData BOMItemIsBulkMaterial | SAP SCHGT | I_BOMItem&#x27;;
+COMMENT ON COLUMN ds1_bom_components.is_backflush_enabled              IS &#x27;#23 OData IsBackflushEnabled | SAP RGEKZ | I_BOMItem&#x27;;
+
+-- ---------------------------------------------------------------------
+-- DATASET 2  Production Version  (FDS 7.3, 12 fields, + run_id)
+-- One row per Material x Plant x Production Version.
+-- API_PRODUCT_SRV  A_ProductionVersion.  Links: BOM alternative -&gt; ds1, recipe -&gt; ds3.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS ds2_production_version (
+    run_id                          BIGINT       NOT NULL REFERENCES job_run(run_id) ON DELETE CASCADE,
+    material                        VARCHAR(40)  NOT NULL,   -- #1  Material
+    plant                           VARCHAR(4)   NOT NULL,   -- #2  Plant
+    production_version              VARCHAR(4)   NOT NULL,   -- #3  ProductionVersion (0001, 0002 ...)
+    production_version_text         VARCHAR(40),             -- #4  ProductionVersionText
+    bill_of_material_variant        VARCHAR(2),              -- #5  BillOfMaterialVariant -&gt; ds1
+    mfg_order_routing_group         VARCHAR(8),              -- #6  MfgOrderRoutingGroup (PLNNR) -&gt; ds3
+    mfg_order_routing_grp_counter   VARCHAR(2),              -- #7  MfgOrderRoutingGrpCounter (PLNAL) -&gt; ds3
+    minimum_lot_size_quantity       NUMERIC(13,3),           -- #8
+    maximum_lot_size_quantity       NUMERIC(13,3),           -- #9
+    production_version_valid_from   DATE,                    -- #10
+    production_version_valid_to     DATE,                    -- #11
+    is_marked_for_deletion          BOOLEAN,                 -- #12 flagged, not excluded
+    PRIMARY KEY (run_id, material, plant, production_version)
+);
+CREATE INDEX IF NOT EXISTS ix_ds2_bom    ON ds2_production_version (material, plant, bill_of_material_variant);
+CREATE INDEX IF NOT EXISTS ix_ds2_recipe ON ds2_production_version (mfg_order_routing_group, mfg_order_routing_grp_counter);
+COMMENT ON TABLE ds2_production_version IS &#x27;FDS Dataset 2 - Production Version, 12 fields + run_id (API_PRODUCT_SRV / A_ProductionVersion)&#x27;;
+COMMENT ON COLUMN ds2_production_version.material                      IS &#x27;#1 OData Material | joins to ds1&#x27;;
+COMMENT ON COLUMN ds2_production_version.plant                         IS &#x27;#2 OData Plant | joins to ds1&#x27;;
+COMMENT ON COLUMN ds2_production_version.production_version            IS &#x27;#3 OData ProductionVersion | e.g. 0001, 0002&#x27;;
+COMMENT ON COLUMN ds2_production_version.production_version_text       IS &#x27;#4 OData ProductionVersionText&#x27;;
+COMMENT ON COLUMN ds2_production_version.bill_of_material_variant      IS &#x27;#5 OData BillOfMaterialVariant | BOM alternative of this version, joins ds1.bill_of_material_variant&#x27;;
+COMMENT ON COLUMN ds2_production_version.mfg_order_routing_group       IS &#x27;#6 OData MfgOrderRoutingGroup | recipe group PLNNR, primary key to ds3&#x27;;
+COMMENT ON COLUMN ds2_production_version.mfg_order_routing_grp_counter IS &#x27;#7 OData MfgOrderRoutingGrpCounter | recipe counter PLNAL, secondary key to ds3&#x27;;
+COMMENT ON COLUMN ds2_production_version.minimum_lot_size_quantity     IS &#x27;#8 OData MinimumLotSizeQuantity | min batch/lot size this version is valid for&#x27;;
+COMMENT ON COLUMN ds2_production_version.maximum_lot_size_quantity     IS &#x27;#9 OData MaximumLotSizeQuantity | max batch/lot size this version is valid for&#x27;;
+COMMENT ON COLUMN ds2_production_version.production_version_valid_from IS &#x27;#10 OData ProductionVersionValidFrom | drives seasonal / alternate BOM selection&#x27;;
+COMMENT ON COLUMN ds2_production_version.production_version_valid_to   IS &#x27;#11 OData ProductionVersionValidTo&#x27;;
+COMMENT ON COLUMN ds2_production_version.is_marked_for_deletion        IS &#x27;#12 OData IsMarkedForDeletion | flagged in output, not excluded&#x27;;
+
+-- ---------------------------------------------------------------------
+-- DATASET 3  Master Recipe  (FDS 7.4, 17 fields, + run_id)
+-- One row per Recipe group x Recipe x Operation (x allocated component).
+-- Header #1-#8 repeat on every operation row; operation #9-#14; component #15-#17
+-- are empty for operations that consume nothing (e.g. QA testing).
+-- API_MASTERRECIPE_0001  A_MasterRecipeHeader + $expand operations + components
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS ds3_master_recipe (
+    ds3_id                          BIGSERIAL    PRIMARY KEY,
+    run_id                          BIGINT       NOT NULL REFERENCES job_run(run_id) ON DELETE CASCADE,
+    recipe_group                    VARCHAR(8)   NOT NULL,   -- #1  RecipeGroup (PLNNR)
+    recipe                          VARCHAR(2)   NOT NULL,   -- #2  Recipe (PLNAL)
+    recipe_desc                     VARCHAR(40),             -- #3  RecipeDesc
+    plant                           VARCHAR(4),              -- #4  Plant
+    recipe_status                   VARCHAR(2),              -- #5  RecipeStatus (4 = released)
+    valid_from                      DATE,                    -- #6  ValidFrom
+    base_quantity                   NUMERIC(13,3),           -- #7  BaseQuantity
+    base_unit                       VARCHAR(3),              -- #8  BaseUnit
+    operation_group                 VARCHAR(8)   NOT NULL,   -- #9  OperationGroup
+    operation_node                  VARCHAR(8)   NOT NULL,   -- #10 OperationNode
+    operation_text                  VARCHAR(40),             -- #11 OperationText
+    work_center                     VARCHAR(20),             -- #12 WorkCenter
+    standard_process_duration       NUMERIC(13,3),           -- #13 StandardProcessDuration
+    standard_process_duration_unit  VARCHAR(3),              -- #14 H / MIN
+    bill_of_material_component      VARCHAR(40),             -- #15 -&gt; ds1 component
+    component_quantity              NUMERIC(13,3),           -- #16
+    component_unit                  VARCHAR(3)               -- #17
+);
+CREATE INDEX IF NOT EXISTS ix_ds3_recipe    ON ds3_master_recipe (run_id, recipe_group, recipe);
+CREATE INDEX IF NOT EXISTS ix_ds3_component ON ds3_master_recipe (bill_of_material_component);
+COMMENT ON TABLE ds3_master_recipe IS &#x27;FDS Dataset 3 - Master Recipe, 17 fields + run_id (API_MASTERRECIPE_0001). OI-007: only valid for PP-PI plants.&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.recipe_group                   IS &#x27;#1 OData RecipeGroup (header) | PLNNR, joins ds2.mfg_order_routing_group&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.recipe                         IS &#x27;#2 OData Recipe (header) | PLNAL, joins ds2.mfg_order_routing_grp_counter&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.recipe_desc                    IS &#x27;#3 OData RecipeDesc (header)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.plant                          IS &#x27;#4 OData Plant (header)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.recipe_status                  IS &#x27;#5 OData RecipeStatus (header) | 4 = released for order&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.valid_from                     IS &#x27;#6 OData ValidFrom (header)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.base_quantity                  IS &#x27;#7 OData BaseQuantity (header)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.base_unit                      IS &#x27;#8 OData BaseUnit (header)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.operation_group                IS &#x27;#9 OData OperationGroup (operation)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.operation_node                 IS &#x27;#10 OData OperationNode (operation)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.operation_text                 IS &#x27;#11 OData OperationText (operation)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.work_center                    IS &#x27;#12 OData WorkCenter (operation)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.standard_process_duration      IS &#x27;#13 OData StandardProcessDuration (operation)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.standard_process_duration_unit IS &#x27;#14 OData StandardProcessDurationUnit (operation) | H or MIN&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.bill_of_material_component     IS &#x27;#15 OData BillOfMaterialComponent (component allocation) | links to ds1&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.component_quantity             IS &#x27;#16 OData ComponentQuantity (component allocation)&#x27;;
+COMMENT ON COLUMN ds3_master_recipe.component_unit                 IS &#x27;#17 OData ComponentUnit (component allocation)&#x27;;
+
+-- =====================================================================
+-- PART B2. DRAFT model-feature tables  (NOT in the FDS)
+-- Field names come from the &quot;SAP Data Reference&quot; workbook (Field Master List /
+-- Transactional Data / Companion Data). Types/lengths are standard SAP, assumed.
+-- Only a subset of the workbook&#x27;s fields is included. Confirm the extraction
+-- method with the SAP team (OI-002 / workbook &quot;Extraction Notes&quot;) before relying on them.
+-- sap_material_valuation (MBEW) matters: it is where REAL material cost lives,
+-- because material cost in the paint order data is 0 on every order.
+-- =====================================================================
+
+-- Material master: MARA + MAKT
+CREATE TABLE IF NOT EXISTS sap_material (
+    matnr  VARCHAR(18) PRIMARY KEY,
+    maktx  VARCHAR(40),            -- MAKT description (EN)
+    mtart  VARCHAR(4),             -- material type FERT / HALB / ROH / VERP
+    matkl  VARCHAR(9),             -- material group
+    spart  VARCHAR(2),             -- division
+    meins  VARCHAR(3),             -- base unit
+    brgew  NUMERIC(13,3),          -- gross weight
+    ntgew  NUMERIC(13,3),          -- net weight
+    gewei  VARCHAR(3),
+    volum  NUMERIC(13,3),
+    voleh  VARCHAR(3),
+    xchpf  BOOLEAN,                -- batch managed
+    prdha  VARCHAR(18),            -- product hierarchy
+    lvorm  BOOLEAN,                -- deletion flag
+    ersda  DATE,
+    stoff  VARCHAR(18)             -- hazardous material number
+);
+
+-- Material by plant: MARC (MRP / procurement / lead times)
+CREATE TABLE IF NOT EXISTS sap_material_plant (
+    matnr  VARCHAR(18) NOT NULL REFERENCES sap_material(matnr),
+    werks  VARCHAR(4)  NOT NULL,
+    dismm  VARCHAR(2),             -- MRP type
+    dispo  VARCHAR(3),             -- MRP controller
+    disls  VARCHAR(2),             -- lot-sizing procedure
+    bstmi  NUMERIC(13,3),          -- min lot size
+    bstma  NUMERIC(13,3),          -- max lot size
+    bstfe  NUMERIC(13,3),          -- fixed lot size
+    minbe  NUMERIC(13,3),          -- reorder point
+    eisbe  NUMERIC(13,3),          -- safety stock
+    plifz  SMALLINT,               -- planned delivery days
+    dzeit  SMALLINT,               -- in-house production days
+    wzeit  SMALLINT,               -- total replenishment lead time
+    beskz  VARCHAR(1),             -- procurement type E / F / X
+    sobsl  VARCHAR(2),
+    rgekz  VARCHAR(1),             -- backflush indicator
+    lgpro  VARCHAR(4),
+    fevor  VARCHAR(3),             -- production scheduler
+    qmpur  BOOLEAN,               -- QM active in procurement
+    PRIMARY KEY (matnr, werks)
+);
+
+-- Valuation / cost: MBEW  (this is where REAL material cost lives)
+CREATE TABLE IF NOT EXISTS sap_material_valuation (
+    matnr  VARCHAR(18) NOT NULL REFERENCES sap_material(matnr),
+    bwkey  VARCHAR(4)  NOT NULL,   -- valuation area (= plant)
+    bwtar  VARCHAR(10) NOT NULL DEFAULT &#x27;&#x27;,
+    vprsv  VARCHAR(1),             -- price control S / V
+    stprs  NUMERIC(15,4),          -- standard price
+    verpr  NUMERIC(15,4),          -- moving average price
+    peinh  INTEGER,                -- price unit
+    bklas  VARCHAR(4),
+    lbkum  NUMERIC(15,3),
+    salk3  NUMERIC(18,2),
+    PRIMARY KEY (matnr, bwkey, bwtar)
+);
+
+-- Stock by storage location: MARD
+CREATE TABLE IF NOT EXISTS sap_material_stock (
+    matnr  VARCHAR(18) NOT NULL REFERENCES sap_material(matnr),
+    werks  VARCHAR(4)  NOT NULL,
+    lgort  VARCHAR(4)  NOT NULL,
+    labst  NUMERIC(13,3),          -- unrestricted
+    insme  NUMERIC(13,3),          -- quality inspection
+    speme  NUMERIC(13,3),          -- blocked
+    PRIMARY KEY (matnr, werks, lgort)
+);
+
+-- Order confirmation (actual start/end, yield, scrap): AFRU
+CREATE TABLE IF NOT EXISTS sap_order_confirmation (
+    conf_id BIGSERIAL PRIMARY KEY,
+    aufnr  CHAR(12)    NOT NULL,
+    rmzhl  VARCHAR(8),
+    isdd   DATE, isdz TIME,        -- actual start
+    iedd   DATE, iedz TIME,        -- actual end
+    gamng  NUMERIC(13,3),          -- yield
+    xmnga  NUMERIC(13,3),          -- scrap
+    arbpl  VARCHAR(8)              -- work center
+);
+CREATE INDEX IF NOT EXISTS ix_conf_aufnr ON sap_order_confirmation (aufnr);
+
+-- Order component reservations (planned vs withdrawn): RESB
+CREATE TABLE IF NOT EXISTS sap_order_component (
+    rsnum  VARCHAR(10) NOT NULL,
+    rspos  VARCHAR(4)  NOT NULL,
+    aufnr  CHAR(12),
+    matnr  VARCHAR(18),            -- component
+    bdmng  NUMERIC(13,3),          -- required qty
+    enmng  NUMERIC(13,3),          -- withdrawn qty
+    PRIMARY KEY (rsnum, rspos)
+);
+CREATE INDEX IF NOT EXISTS ix_comp_aufnr ON sap_order_component (aufnr);
+
+-- Batch master: MCHA
+CREATE TABLE IF NOT EXISTS sap_batch (
+    matnr  VARCHAR(18) NOT NULL,
+    werks  VARCHAR(4)  NOT NULL,
+    charg  VARCHAR(10) NOT NULL,
+    hsdat  DATE,                   -- production date
+    vfdat  DATE,                   -- expiry
+    lwedt  DATE,                   -- last goods receipt
+    PRIMARY KEY (matnr, werks, charg)
+);
+</pre></div>
+</section></div><script>
+document.querySelectorAll('button.copy').forEach(b=>b.onclick=()=>{
+  const t=b.parentElement.querySelector('pre').innerText; navigator.clipboard.writeText(t).then(()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy DDL',1500)});});
+</script></body></html>

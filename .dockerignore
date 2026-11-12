@@ -9,3 +9,4 @@ deploy-api.zip
 scripts/
 *.log
 .pytest_cache/
+paint_etl/

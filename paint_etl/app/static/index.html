@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BOM Data Loader</title>
+<style>
+  :root {
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1b2430; --muted:#667085; --line:#e4e7ec;
+    --accent:#2457d6; --accent-ink:#ffffff; --ok:#12805c; --okbg:#e3f5ec; --warn:#a15c07; --warnbg:#fdf1dc;
+    --bad:#b42318; --badbg:#fde8e6; --info:#475467; --infobg:#eef1f5; --run:#2457d6; --runbg:#e6edfc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161c; --card:#1a2028; --ink:#e8ecf2; --muted:#98a2b3; --line:#2b3340;
+      --accent:#6d9bff; --accent-ink:#0c1220; --ok:#4cc79a; --okbg:#143428; --warn:#f0b35a; --warnbg:#3a2a10;
+      --bad:#ff8a80; --badbg:#3c1816; --info:#aab3c2; --infobg:#232a35; --run:#8db0ff; --runbg:#1c2a4a;
+    }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:20px 16px 60px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  h1 { font-size:20px; margin:0; }
+  h2 { font-size:15px; margin:0 0 4px; }
+  .sub { color:var(--muted); font-size:13px; margin:0 0 12px; }
+  .grid { display:grid; grid-template-columns:1.4fr 1fr; gap:16px; }
+  @media (max-width:860px){ .grid{ grid-template-columns:1fr; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:16px; }
+  .pill { display:inline-block; padding:2px 9px; border-radius:99px; font-size:12px; font-weight:600; }
+  .pill.ok{background:var(--okbg);color:var(--ok)} .pill.bad{background:var(--badbg);color:var(--bad)}
+  .pill.warn{background:var(--warnbg);color:var(--warn)} .pill.info{background:var(--infobg);color:var(--info)}
+  .pill.run{background:var(--runbg);color:var(--run)}
+  .drop { border:2px dashed var(--line); border-radius:10px; padding:26px 12px; text-align:center; cursor:pointer; transition:.15s; }
+  .drop.over { border-color:var(--accent); background:var(--runbg); }
+  .drop b { display:block; font-size:15px; margin-bottom:2px; }
+  .drop span { color:var(--muted); font-size:13px; }
+  button { font:inherit; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:6px 12px; border-radius:7px; cursor:pointer; }
+  button.primary { background:var(--accent); color:var(--accent-ink); border-color:var(--accent); font-weight:600; }
+  button:disabled { opacity:.5; cursor:default; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; color:var(--muted); font-weight:600; padding:6px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  td { padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .scroll { overflow:auto; max-height:380px; }
+  .folders { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0; }
+  .folder { background:var(--infobg); border-radius:8px; padding:8px; text-align:center; }
+  .folder b { display:block; font-size:20px; }
+  .folder span { font-size:12px; color:var(--muted); }
+  code { background:var(--infobg); padding:1px 5px; border-radius:4px; font-size:12px; word-break:break-all; }
+  .tables { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:8px; }
+  .tbl { border:1px solid var(--line); border-radius:8px; padding:8px 10px; cursor:pointer; display:flex; justify-content:space-between; gap:8px; }
+  .tbl:hover { border-color:var(--accent); }
+  .tbl.empty { color:var(--muted); }
+  .tbl b { font-variant-numeric:tabular-nums; }
+  .check { display:flex; gap:10px; padding:6px 0; border-bottom:1px solid var(--line); align-items:flex-start; }
+  .check:last-child { border:0; }
+  .banner { background:var(--runbg); color:var(--run); padding:8px 12px; border-radius:8px; margin-bottom:10px; font-weight:600; }
+  .muted { color:var(--muted); }
+  .prog { height:6px; background:var(--infobg); border-radius:99px; overflow:hidden; min-width:70px; margin-top:4px; }
+  .prog i { display:block; height:100%; background:var(--accent); }
+  a.link { color:var(--accent); cursor:pointer; text-decoration:underline; }
+  .uplist div { font-size:13px; padding:2px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>BOM Data Loader</h1>
+      <div class="muted">Upload SAP / paint-data files &rarr; they are cleaned and loaded into the local PostgreSQL database</div>
+    </div>
+    <div><span id="dbpill" class="pill info">checking…</span></div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1. Upload files</h2>
+      <p class="sub">Select all your files at once (<code>.xlsx</code> or <code>.csv</code>). The file type is detected from the column names — you don't have to say which is which. Large files (the 80&nbsp;MB rework workbook) take a few minutes.</p>
+      <div id="drop" class="drop">
+        <b>Drop files here or click to choose</b>
+        <span>Process Order Base · Rework Movements · Order Status · Cost Report</span>
+      </div>
+      <input id="file" type="file" multiple accept=".xlsx,.xlsm,.csv" hidden>
+      <div id="uplist" class="uplist" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <h2>Shared folder (background processing)</h2>
+      <p class="sub">The UI upload just puts the file in <b>inbox</b>. A background worker loads it, then moves it. You can also copy files into the inbox folder yourself.</p>
+      <div class="folders" id="folders"></div>
+      <div class="muted" style="font-size:12px">inbox &rarr; processing &rarr; <b>processed</b> (or <b>failed</b>)</div>
+      <div style="margin-top:8px"><code id="inboxpath"></code></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <div><h2>2. Processing</h2><p class="sub" style="margin:0">Live status of every file and sheet. Each sheet loads all-or-nothing.</p></div>
+      <div><span id="rebuildinfo" class="muted" style="margin-right:8px"></span><button id="rebuild">Rebuild summary now</button></div>
+    </div>
+    <div id="banner"></div>
+    <div class="scroll" style="margin-top:8px">
+      <table>
+        <thead><tr><th>#</th><th>File / sheet</th><th>Detected as</th><th class="num">Rows read</th><th class="num">Loaded</th><th class="num">Rejected</th><th>Status</th><th>Message</th></tr></thead>
+        <tbody id="jobs"><tr><td colspan="8" class="muted">No files processed yet.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>3. Database tables</h2>
+    <p class="sub">Click a table to see its columns and first rows. Greyed tables are created but empty (SAP data — comes later from the BTP extraction).</p>
+    <div style="font-weight:600;margin:6px 0">Paint order data (loaded from your files)</div>
+    <div id="paint" class="tables"></div>
+    <div style="font-weight:600;margin:14px 0 2px">FDS extraction tables — BOM, production version, recipe (waiting for BTP extraction)</div>
+    <div class="muted" style="font-size:12px;margin-bottom:6px">Layout follows FDS v1.5 section 12.4 / 7. Hover a column in the preview for its OData / SAP field.</div>
+    <div id="fds" class="tables"></div>
+    <div style="font-weight:600;margin:14px 0 2px">Draft model-feature tables (from the SAP Data Reference workbook — not in the FDS)</div>
+    <div class="muted" style="font-size:12px;margin-bottom:6px">Subset of fields, types assumed. Confirm the extraction method with the SAP team before relying on them.</div>
+    <div id="draft" class="tables"></div>
+    <div style="font-weight:600;margin:14px 0 2px">BOM Optimizer application tables (Layers M, T, R, A — rules, runs, adoption)</div>
+    <div class="muted" style="font-size:12px;margin-bottom:6px">From the HLD/LLD document. Rules, criteria and season map are seeded; the rest fill once the optimizer runs.</div>
+    <div id="apptbl" class="tables"></div>
+    <div id="preview" style="margin-top:14px"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div><h2>4. Data checks</h2><p class="sub" style="margin:0">Compares our calculated summary with the client's own Cost Report.</p></div>
+      <button id="runchecks">Run checks</button>
+    </div>
+    <div id="checks" style="margin-top:8px" class="muted">Not run yet.</div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = n => Number(n ?? 0).toLocaleString();
+const api = async (url, opt) => { const r = await fetch(url, opt); if (!r.ok) throw new Error((await r.text()).slice(0,300)); return r.json(); };
+
+// ── upload ──
+const drop = $('#drop'), input = $('#file');
+drop.onclick = () => input.click();
+input.onchange = () => { upload([...input.files]); input.value = ''; };
+['dragenter','dragover'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', ev => upload([...ev.dataTransfer.files]));
+
+function upload(files) {
+  files.forEach(f => {
+    const row = document.createElement('div');
+    row.innerHTML = `${esc(f.name)} <span class="muted">(${(f.size/1048576).toFixed(1)} MB)</span> — <span class="st">uploading 0%</span>`;
+    $('#uplist').prepend(row);
+    const st = row.querySelector('.st');
+    const fd = new FormData(); fd.append('files', f);
+    const x = new XMLHttpRequest();
+    x.open('POST', '/api/upload');
+    x.upload.onprogress = e => { if (e.lengthComputable) st.textContent = `uploading ${Math.round(100*e.loaded/e.total)}%`; };
+    x.onload = () => { st.innerHTML = x.status === 200 ? '<span class="pill ok">queued for processing</span>' : `<span class="pill bad">${esc(x.responseText.slice(0,120))}</span>`; refresh(); };
+    x.onerror = () => st.innerHTML = '<span class="pill bad">upload failed</span>';
+    x.send(fd);
+  });
+}
+
+// ── status polling ──
+const chip = s => ({SUCCESS:'ok',FAILED:'bad',SKIPPED:'warn',RUNNING:'run'}[s] || 'info');
+let lastSig = '', lastIdle = true;
+
+async function refreshJobs() {
+  const d = await api('/api/jobs');
+  const busy = !!d.current_file || d.queued_files.length > 0 || d.jobs.some(j => j.status === 'RUNNING');
+  let b = '';
+  if (d.current_file) b += `<div class="banner">Processing: ${esc(d.current_file)} …</div>`;
+  if (d.queued_files.length) b += `<div class="muted" style="margin:6px 0">Waiting in inbox: ${d.queued_files.map(esc).join(', ')}</div>`;
+  $('#banner').innerHTML = b;
+  $('#jobs').innerHTML = d.jobs.length ? d.jobs.map(j => {
+    const pct = j.status === 'RUNNING' && j.rows_in_file ? '<div class="prog"><i style="width:60%"></i></div>' : '';
+    return `<tr><td>${j.batch_id}</td><td>${esc(j.source_file)}${j.source_sheet ? ` <span class="muted">/ ${esc(j.source_sheet)}</span>` : ''}</td>
+      <td>${esc(j.dataset)}</td><td class="num">${fmt(j.rows_in_file)}</td><td class="num">${fmt(j.rows_loaded)}</td>
+      <td class="num">${j.rows_rejected ? `<a class="link" onclick="showRejects(${j.batch_id})">${fmt(j.rows_rejected)}</a>` : 0}</td>
+      <td><span class="pill ${chip(j.status)}">${j.status}</span>${pct}</td><td class="muted">${esc(j.message)}</td></tr>`;
+  }).join('') : '<tr><td colspan="8" class="muted">No files processed yet.</td></tr>';
+  $('#rebuildinfo').textContent = d.last_rebuild ? `Summary rebuilt ${d.last_rebuild.at} (${fmt(d.last_rebuild.rows)} orders)` : (d.summary_dirty ? 'Summary will rebuild when the queue is empty…' : '');
+  const sig = d.jobs.map(j => j.batch_id + j.status + j.rows_loaded).join('|');
+  if (sig !== lastSig) { lastSig = sig; refreshOverview(); }
+  if (lastIdle === false && !busy) runChecks();      // just finished everything -> auto-check
+  lastIdle = !busy;
+}
+
+async function refreshOverview() {
+  const o = await api('/api/overview');
+  $('#folders').innerHTML = Object.entries(o.folders).map(([k,v]) => `<div class="folder"><b>${v.files}</b><span>${k}</span></div>`).join('');
+  $('#inboxpath').textContent = o.folders.inbox.path;
+  const tile = t => `<div class="tbl ${t.rows ? '' : 'empty'}" onclick="preview('${t.name}')"><span>${t.name}</span><b>${fmt(t.rows)}</b></div>`;
+  $('#paint').innerHTML = o.paint_tables.map(tile).join('');
+  $('#fds').innerHTML = o.fds_tables.map(tile).join('');
+  $('#draft').innerHTML = o.draft_tables.map(tile).join('');
+  $('#apptbl').innerHTML = (o.app_tables || []).map(tile).join('');
+}
+
+async function preview(name) {
+  const d = await api(`/api/table/${name}?limit=15`);
+  const cols = d.columns.map(c => c.column_name);
+  $('#preview').innerHTML = `<h2>${esc(name)} <span class="muted" style="font-weight:400">— first rows</span></h2>
+    <div class="scroll"><table><thead><tr>${d.columns.map(c => `<th title="${esc(c.comment || '')}">${esc(c.column_name)}<div class="muted" style="font-weight:400;font-size:11px">${esc(c.data_type)}</div></th>`).join('')}</tr></thead>
+    <tbody>${d.rows.length ? d.rows.map(r => `<tr>${cols.map(c => `<td>${esc(r[c])}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${cols.length}" class="muted">Empty table</td></tr>`}</tbody></table></div>`;
+  $('#preview').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+async function showRejects(id) {
+  const r = await api('/api/rejects/' + id);
+  $('#preview').innerHTML = `<h2>Rejected rows — batch ${id} <span class="muted" style="font-weight:400">(first 200)</span></h2>
+    <div class="scroll"><table><thead><tr><th>Excel row</th><th>Reason</th><th>Raw values</th></tr></thead><tbody>
+    ${r.map(x => `<tr><td>${x.row_number}</td><td>${esc(x.reason)}</td><td class="muted">${esc(x.raw_row)}</td></tr>`).join('')}</tbody></table></div>`;
+  $('#preview').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+async function runChecks() {
+  $('#checks').textContent = 'Running…';
+  try {
+    const d = await api('/api/checks');
+    $('#checks').innerHTML = d.checks.map(c => `<div class="check"><span class="pill ${ {pass:'ok',fail:'bad',warn:'warn',info:'info'}[c.level] }">${c.level.toUpperCase()}</span>
+      <div><b>${esc(c.name)}</b><div class="muted">${esc(c.detail)}</div></div></div>`).join('') || 'No checks.';
+  } catch (e) { $('#checks').textContent = 'Checks failed: ' + e.message; }
+}
+
+$('#runchecks').onclick = runChecks;
+$('#rebuild').onclick = async () => { $('#rebuild').disabled = true; try { await api('/api/rebuild', {method:'POST'}); await refreshOverview(); await runChecks(); } finally { $('#rebuild').disabled = false; } };
+
+async function health() {
+  try { const h = await api('/api/health'); $('#dbpill').className = 'pill ok'; $('#dbpill').textContent = 'Database connected · ' + h.database; }
+  catch { $('#dbpill').className = 'pill bad'; $('#dbpill').textContent = 'Database not reachable'; }
+}
+function refresh() { refreshJobs().catch(()=>{}); }
+health(); refresh(); refreshOverview();
+setInterval(refresh, 2000);
+setInterval(health, 15000);
+</script>
+</body>
+</html>

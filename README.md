@@ -80,3 +80,9 @@ app/
 
 See `.env` file. Azure OpenAI is optional for Phase 0 — the explain endpoint
 falls back to rule-based explanations.
+
+## paint_etl/ — data loader, optimizer tables and ranking
+A separate small service in `paint_etl/` (own README, `requirements.txt`, PostgreSQL via Docker):
+loads the client's paint-order Excel files, holds the BOM Optimizer tables (rules, candidates, ranking runs)
+and the ranking / candidate-builder code, plus the design documents in `paint_etl/docs/`.
+It is independent of the SQLite app above. Start it with `cd paint_etl; .\run.ps1` (needs Docker and Python 3.12+).

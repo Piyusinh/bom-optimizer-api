@@ -1,0 +1,7 @@
+.venv/
+data/
+vendor/
+*.out
+*.err
+__pycache__/
+*.pyc

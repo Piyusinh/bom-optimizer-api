@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BOM Optimizer HLD LLD</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1b2430;--muted:#5d6878;--line:#dfe3ea;--accent:#2457d6;--accent2:#e8eefc;--ok:#12805c;--okbg:#e3f5ec;--warn:#9a5b06;--warnbg:#fdf1dc;--bad:#b42318;--badbg:#fde8e6;--code:#f0f2f6;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--card:#1a2028;--ink:#e8ecf2;--muted:#a3adbd;--line:#2b3340;--accent:#7ea5ff;--accent2:#1c2a4a;--ok:#4cc79a;--okbg:#143428;--warn:#f0b35a;--warnbg:#3a2a10;--bad:#ff8a80;--badbg:#3c1816;--code:#10141a;}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1060px;margin:0 auto;padding:18px 16px 80px}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
+header.top .in{max-width:1060px;margin:0 auto;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+nav a{color:var(--muted);text-decoration:none;font-size:13px;margin-right:11px;white-space:nowrap}nav a:hover{color:var(--accent)}
+section.page{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin:18px 0}
+h1{font-size:27px;margin:4px 0 6px}h2{font-size:21px;margin:0 0 4px}h3{font-size:16.5px;margin:22px 0 6px}h4{font-size:14.5px;margin:14px 0 4px}
+.lead{color:var(--muted);margin:0 0 12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
+th{text-align:left;color:var(--muted);font-weight:600;padding:7px 9px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto}
+code{background:var(--code);padding:1px 6px;border-radius:5px;font-size:12.5px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:9px;padding:12px 14px;overflow:auto;font:12.5px/1.5 ui-monospace,Consolas,monospace;margin:8px 0}
+.pill{display:inline-block;padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600;margin-right:4px;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.bad{background:var(--badbg);color:var(--bad)}.pill.info{background:var(--accent2);color:var(--accent)}
+.callout{border-left:4px solid var(--warn);background:var(--warnbg);border-radius:6px;padding:9px 13px;margin:12px 0;font-size:14px}
+.callout.ok{border-color:var(--ok);background:var(--okbg)}.callout.bad{border-color:var(--bad);background:var(--badbg)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.box{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg)}
+ul.tight{margin:6px 0 6px 18px;padding:0}ul.tight li{margin:3px 0}
+.k{color:var(--muted);font-size:12.5px}
+svg{max-width:100%;height:auto}svg text{fill:var(--ink);font:12px system-ui,sans-serif}svg .b{fill:var(--card);stroke:var(--line);stroke-width:1.4}
+svg .a{fill:var(--accent2);stroke:var(--accent);stroke-width:1.4}svg .g{fill:var(--okbg);stroke:var(--ok);stroke-width:1.4}svg .w{fill:var(--warnbg);stroke:var(--warn);stroke-width:1.4}
+svg .l{stroke:var(--muted);stroke-width:1.5;fill:none}svg .m{fill:var(--muted);font-size:11px}
+@media print{header.top{display:none}body{background:#fff;color:#000;font-size:10.5pt}section.page{border:0;padding:0;page-break-before:always}pre{white-space:pre-wrap}}
+</style></head><body>
+<header class="top"><div class="in"><b>BOM Optimizer — Requirements, HLD &amp; LLD</b><nav>
+<a href="#s0">0 Do we have it?</a><a href="#s1">1 Scope</a><a href="#s2">2 Requirements</a><a href="#s3">3 HLD</a><a href="#s4">4 Data flow</a><a href="#s5">5 Data model</a><a href="#s6">6 Rules</a><a href="#s7">7 Ranking</a><a href="#s8">8 API</a><a href="#s9">9 UI</a><a href="#s10">10 Adopt</a><a href="#s11">11 Reuse</a><a href="#s12">12 Plan &amp; gaps</a></nav></div></header>
+<div class="wrap">
+
+<section class="page" id="s0">
+<h1>BOM Optimizer — Production Persona</h1>
+<p class="lead">Requirements, high-level design and low-level design. Draft v0.1, 7 Nov 2026. Sources: <code>BOM Optimizer RTM - V1.xlsx</code> (all sheets + your two screenshots), the FDS v1.5, the SAP Data Reference workbook, and the existing code in <code>src/bom/api</code> and <code>src/bom/ui</code>.</p>
+
+<h2>0. "Ensure we have it" — do we?</h2>
+<div class="callout"><b>Short answer: we have the shape of the product, but not the rules.</b> The Excel gives the screen, the inputs, the ranking choices, the outputs and the data objects. It does <b>not</b> contain a rule list, formulas, or the SAP write-back method. Those are listed below as gaps so nobody assumes they exist.</div>
+<div class="grid2">
+<div class="box"><h4><span class="pill ok">In the Excel</span></h4><ul class="tight">
+<li>One persona: <b>Production</b> (Planning and Sales sheets are empty or aspirational).</li>
+<li>Inputs: Plant (mandatory), Material, Planned Order, Process Order, Production Line, then Rank 1 to Rank 4 (the screenshot shows Rank 1 = Cost).</li>
+<li>Go button, then ranked cards: Material, Prod Version, Avg cycles, Avg reprocess cycles (e.g. "2 vs 6"), Cost (e.g. "40% reduction"), Proposed Recipe button, Legal approval status (yellow / green), Adopt button.</li>
+<li>Ranking considers: history (time), cost, number of rework cycles, season, production line, production efficiency (hours, lead time).</li>
+<li>Final quantity = original recipe + all goods issues (movement 261) on the process order.</li>
+<li>Adopt must sync BOM / recipe changes to the process order in SAP.</li>
+<li>Data objects: Material master, BOM, Routing / recipe, Production version; Planned orders; Process orders (header + components + operations); inventory; goods movements.</li>
+<li>Load plan: one-time load for active materials, weekly batch for open planned orders and TECO'd process orders.</li>
+</ul></div>
+<div class="box"><h4><span class="pill bad">NOT in the Excel</span></h4><ul class="tight">
+<li><b>A list of "industry rules".</b> None exist as a rule list. Only criteria and a few remarks (active materials, raw-material grade, availability, legal).</li>
+<li>How cost is calculated (which price field, price unit, currency).</li>
+<li>What "rework / reprocess cycle" is, and how a rework order links to the original (the Questions sheet asks this; no answer).</li>
+<li>Where legal approval status comes from (Planning item 3 and 4 are "open questions").</li>
+<li>The SAP API and method for Adopt.</li>
+<li>Column types, data volumes, user roles, authentication, performance targets.</li>
+<li>The meaning of "78% / 96% / 100% Cycle 1/2/3" beside rank 1 (my reading: cumulative share of batches done by cycle 1, 2, 3 — to confirm).</li>
+</ul></div></div>
+<p><b>So "are rules also in Excel only?"</b> Mostly no. Ten requirement-level rules can be traced to the Excel (section 6), but each lacks parameters. The rest come from the old code or are my proposals and must be confirmed in a workshop with the client.</p>
+<div class="callout bad"><b>"4 tables" needs your confirmation.</b> The Excel's Requirements sheet names <b>four master-data objects</b> (Material Master, BOM, Routing, Production Version) plus transactional objects (Planned Orders, Process Orders with header, components, operations). I read your "4 tables" as those four master objects, and I design them as the four core tables in Layer M (section 5). The transactional, refined and application tables sit around them because the persona cannot work without them. Earlier "4 tables" in the paint SQL document (STG_ORDER_*) are a different thing: the client's reporting steps, which become history inputs here.</div>
+</section>
+
+<section class="page" id="s1">
+<h2>1. Scope and persona</h2>
+<p><b>Product goal:</b> a production planner enters a plant and (optionally) a material, planned order, process order and production line, orders up to four ranking criteria, and gets a ranked list of BOM / recipe alternatives, each with cost, rework evidence, season fit and legal status. The planner adopts one, and the system sends the change to SAP.</p>
+<table><thead><tr><th>In scope (v1)</th><th>Out of scope (v1)</th></tr></thead><tbody>
+<tr><td>Production persona screen (React) · FastAPI · rules and ranking in database · data on SAP BTP (HANA Cloud) · extraction from S/4HANA · Adopt with approval and audit · admin of rules and criteria order</td>
+<td>Planning persona (S&amp;OP, commodity forecast) · Sales persona · market volatility feed · advanced legal engine · ML model training (rules first, ML later) · archive migration from legacy (Questions row 6)</td></tr></tbody></table>
+<h4>Roles (proposal — the Excel names none)</h4>
+<ul class="tight"><li><b>Planner</b>: run analysis, view, request adopt.</li><li><b>Approver</b>: approve adopt (needed because SAP write must be human-approved).</li><li><b>Rule admin</b>: maintain rules, criteria, season map, legal status.</li><li><b>Viewer</b>: read only.</li></ul>
+</section>
+
+<section class="page" id="s2">
+<h2>2. Requirements</h2>
+<p class="lead">Each requirement shows where it comes from. "Proposed" means I added it, not the client.</p>
+<div class="tw"><table><thead><tr><th>ID</th><th>Requirement</th><th>Source</th></tr></thead><tbody>
+<tr><td>FR-01</td><td>Selection screen with Plant (mandatory), Material, Planned Order, Process Order, Production Line and a Go button. From the given inputs the system resolves one anchor: a material, a process order or a planned order.</td><td>Prod Output Persona; Production → Algorithm 1.0–1.4, 0.1</td></tr>
+<tr><td>FR-02</td><td>Up to 4 ranking criteria chosen and ordered by the user (Rank 1 to Rank 4). Rank 1 dominates.</td><td>Prod Output Persona (Rank 1 = Cost); old code comment quoting the client call</td></tr>
+<tr><td>FR-03</td><td>Ranked cards, best first, each showing: material, production version, average cycles, average reprocess cycles versus the current one ("2 vs 6"), cost change vs current ("40% reduction"), legal approval state, cycle-yield mini-chart.</td><td>Prod Output Persona</td></tr>
+<tr><td>FR-04</td><td>"Proposed Recipe" button opens the proposed BOM / recipe (components, quantities, operations) next to the current one.</td><td>Prod Output Persona; Production row 1 "BOM vs proposed BOM comparison"</td></tr>
+<tr><td>FR-05</td><td>Candidates are built from: standard BOM, alternate BOMs / production versions, and what was actually used historically (original recipe plus goods issues 261).</td><td>Planning item 1; Production Algorithm 4</td></tr>
+<tr><td>FR-06</td><td>Ranking considers season; the order's start date decides the planned season.</td><td>Production Algorithm 1</td></tr>
+<tr><td>FR-07</td><td>Raw-material grades are considered for the proposed BOM; raw-material availability is checked for planned-order simulation.</td><td>Production Algorithm 3, 5 (vague — needs detail)</td></tr>
+<tr><td>FR-08</td><td>On the shop floor, the machine / production line is considered.</td><td>Production → Considerations 1</td></tr>
+<tr><td>FR-09</td><td>Production efficiency (operation hours, lead time) is reported next to the rank.</td><td>Production row 6</td></tr>
+<tr><td>FR-10</td><td>Current raw-material cost of the BOM in use is visible.</td><td>Production row 3</td></tr>
+<tr><td>FR-11</td><td>Adopt sends the chosen BOM / recipe change to the process order in SAP. It needs explicit human approval and is fully audited.</td><td>Production → Considerations, Output B; old-code rule DIC-C09</td></tr>
+<tr><td>FR-12</td><td>Only active materials are used (status and deletion indicator); only finished and intermediate materials are in scope for BOM / recipe.</td><td>Production → Proposed logic for master data 2, 3; Material fields</td></tr>
+<tr><td>FR-13</td><td>Rules, criteria and their order are stored in the database and editable by a rule admin without a code release.</td><td>Your request (not in Excel)</td></tr>
+<tr><td>FR-14</td><td>Every analysis is stored with the inputs, rules version and result, so a decision can be explained later ("why is it ranked this way").</td><td>Old-code comment quoting the client; Proposed</td></tr>
+<tr><td>FR-15</td><td>Legal approval status shown per candidate (yellow pending / green approved). Source system unknown.</td><td>Prod Output Persona colours; Planning 3 and 4 open</td></tr>
+<tr><td>FR-16</td><td>Customer component restriction visibility.</td><td>Planning item 4 (open question, no detail)</td></tr>
+<tr><td>FR-17</td><td>Data loads: one-time load of active materials and their process orders; weekly batch for open planned orders and TECO'd process orders; BOM changes picked up daily or weekly.</td><td>Production → Proposed logic for transactional data; master logic 4</td></tr>
+</tbody></table></div>
+<h3>Non-functional (all proposed)</h3>
+<ul class="tight">
+<li><b>Performance:</b> analysis for one material under 5 seconds from pre-computed refined tables, not from raw SAP tables.</li>
+<li><b>Determinism:</b> same inputs and rule version always give the same ranking.</li>
+<li><b>Security:</b> SAP login through BTP (XSUAA); no SAP credentials in the app; role checks on every endpoint.</li>
+<li><b>Audit:</b> every analysis, rule change, approval and SAP call is recorded with user and time.</li>
+<li><b>Volume:</b> design for the 10 GB planned in the chat thread; the paint extract is about 1.7M rows.</li>
+<li><b>Resilience:</b> Adopt is idempotent; a failed SAP call can be retried without duplicate changes.</li>
+</ul>
+</section>
+
+<section class="page" id="s3">
+<h2>3. High-level design</h2>
+<svg viewBox="0 0 980 470" role="img" aria-label="Architecture">
+<rect class="b" x="10" y="10" width="960" height="450" rx="10"/><text x="24" y="30" class="m">SAP BTP subaccount</text>
+<rect class="a" x="30" y="50" width="190" height="90" rx="8"/><text x="125" y="78" text-anchor="middle" font-weight="700">React UI</text><text x="125" y="98" text-anchor="middle">Production Persona</text><text x="125" y="116" text-anchor="middle" class="m">Selection · Rank · Cards · Adopt</text>
+<rect class="b" x="30" y="170" width="190" height="60" rx="8"/><text x="125" y="196" text-anchor="middle">App Router + XSUAA</text><text x="125" y="214" text-anchor="middle" class="m">login, roles, JWT</text>
+<rect class="a" x="290" y="50" width="250" height="180" rx="8"/><text x="415" y="76" text-anchor="middle" font-weight="700">FastAPI service</text>
+<text x="305" y="102">Persona API (analyze, compare, adopt)</text><text x="305" y="122">Rule engine (reads rules from DB)</text><text x="305" y="142">Ranking engine (ordered criteria)</text><text x="305" y="162">Candidate builder</text><text x="305" y="182">Adoption worker (SAP write)</text><text x="305" y="202">Admin API (rules, criteria, legal)</text>
+<rect class="g" x="610" y="50" width="340" height="180" rx="8"/><text x="780" y="76" text-anchor="middle" font-weight="700">SAP HANA Cloud (one database)</text>
+<text x="625" y="102">Layer M  master: material, BOM, recipe, prod. version</text><text x="625" y="122">Layer T  transactional: orders, movements, rework links</text><text x="625" y="142">Layer R  refined: candidates, stats</text><text x="625" y="162">Layer A  app: rules, criteria, runs, results,</text><text x="625" y="180">             decisions, adoptions, audit</text>
+<rect class="w" x="290" y="290" width="250" height="70" rx="8"/><text x="415" y="316" text-anchor="middle" font-weight="700">Extraction jobs</text><text x="415" y="336" text-anchor="middle" class="m">one-time + weekly / daily (Job Scheduling)</text>
+<rect class="b" x="610" y="290" width="160" height="70" rx="8"/><text x="690" y="316" text-anchor="middle">Destination +</text><text x="690" y="334" text-anchor="middle">Connectivity service</text>
+<rect class="b" x="790" y="290" width="160" height="70" rx="8"/><text x="870" y="316" text-anchor="middle">Cloud Connector</text><text x="870" y="334" text-anchor="middle" class="m">secure tunnel</text>
+<rect class="w" x="790" y="390" width="160" height="56" rx="8"/><text x="870" y="414" text-anchor="middle" font-weight="700">SAP S/4HANA</text><text x="870" y="432" text-anchor="middle" class="m">OData APIs</text>
+<path class="l" d="M220 95h70"/><path class="l" d="M125 140v30"/><path class="l" d="M540 140h70"/><path class="l" d="M415 230v60"/><path class="l" d="M540 325h70"/><path class="l" d="M770 325h20"/><path class="l" d="M870 360v30"/><path class="l" d="M610 215h-70" />
+<text x="30" y="300" class="m">Read: S/4 → extraction → HANA</text><text x="30" y="318" class="m">Write: Adopt → FastAPI → S/4 (approved only)</text>
+<text x="30" y="350" class="m">The Excel marks three layers on the output sheet:</text><text x="30" y="368" class="m">"Azure / BTP / ERP". Hosting split is an open item.</text>
+</svg>
+<h3>Design decisions</h3>
+<div class="tw"><table><thead><tr><th>Decision</th><th>Why</th></tr></thead><tbody>
+<tr><td>One database on BTP HANA Cloud, four layers (M, T, R, A)</td><td>Matches the Excel's "Master data / Transactional data / Refined" tables note (Sheet2) and adds an application layer for rules and decisions.</td></tr>
+<tr><td>The UI never reads SAP live. It reads the refined layer.</td><td>Fast, repeatable, auditable. Live SAP is touched only by extraction and by Adopt.</td></tr>
+<tr><td>Rules and ranking criteria live in database tables, evaluated by a generic engine</td><td>Your request. Rules change without a deploy; each analysis records the rule-set version it used.</td></tr>
+<tr><td>Ranking is deterministic rules, not ML, in v1</td><td>There is no confirmed labeled outcome data (rework definition unclear). Old code follows the same principle: AI explains, rules decide.</td></tr>
+<tr><td>Adopt is a staged workflow: request, approve, send, confirm</td><td>SAP write must be human-approved and recoverable.</td></tr>
+<tr><td>React + FastAPI kept</td><td>Already built and aligned with your instruction. Python runs on BTP Cloud Foundry (or Kyma).</td></tr>
+<tr><td>Local development on PostgreSQL, target HANA Cloud</td><td>The paint data and tables already run locally. Section 5 DDL is written to port to HANA (type map in 5.6).</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="page" id="s4">
+<h2>4. Data flow</h2>
+<h3>4.1 Load flow (SAP → database)</h3>
+<ol class="tight">
+<li><b>Select materials:</b> multi-level BOM explosion from finished goods, take unique materials, keep only active (status, deletion flag), types FERT / HALB (and ROH / VERP for components). <span class="k">(Production → master logic 1–3)</span></li>
+<li><b>Master load (Layer M):</b> Material (MARA, MARC, MAKT, cost from MBEW), BOM (header + items), recipe / routing (header, operations, components), production version (MKAL). Via the three OData services in FDS v1.5 (API_PRODUCT_SRV, API_BILL_OF_MATERIAL_SRV, API_MASTERRECIPE_0001).</li>
+<li><b>Transactional load (Layer T):</b> one-time: process orders (header, components, operations) for active materials; weekly: open planned orders and TECO'd process orders; goods movements type 261 per process order; rework links.</li>
+<li><b>Refine (Layer R):</b> after each load, rebuild candidates and statistics (4.2).</li>
+<li><b>Change pick-up:</b> BOM changes daily or weekly by change date (FDS selection by variant).</li>
+</ol>
+<p><b>Where the Excel files fit:</b> the paint data (orders, rework movements, status, Cost Report) loads Layer T through the upload page we already built, so work can start before BTP access exists.</p>
+<h3>4.2 Refine flow (building candidates)</h3>
+<pre>For each material + plant:
+  1 STANDARD    : the BOM + recipe of each production version (MKAL) valid today
+  2 ALTERNATE   : other BOM alternatives / versions of the same material
+  3 HISTORICAL  : for each past process order, final quantities =
+                    original recipe quantities + all goods issues (261) on that order,
+                    grouped by identical component set
+  Normalise each into one candidate (components + quantities per base unit).
+  Per candidate store stats: times used, last used, average reprocess cycles,
+                    cost per unit, operation hours, season counts, lines used.</pre>
+<h3>4.3 Run flow (user clicks Go)</h3>
+<ol class="tight">
+<li>UI posts selection + ordered criteria to <code>POST /api/production/analyze</code>.</li>
+<li>API resolves the anchor (material / order), reads the current BOM as <b>baseline</b>.</li>
+<li>Loads candidates for the material and plant; applies <b>hard rules</b> (infeasible ones are flagged with a reason, not silently dropped).</li>
+<li>Computes criterion values, ranks lexicographically by the user's order, builds the "why" text.</li>
+<li>Stores the run in Layer A (inputs, rule version, every candidate and its score) and returns the cards.</li>
+</ol>
+<h3>4.4 Adopt flow</h3>
+<svg viewBox="0 0 980 250" role="img" aria-label="Adopt sequence">
+<g><rect class="a" x="10" y="10" width="120" height="34" rx="6"/><text x="70" y="32" text-anchor="middle">Planner (UI)</text>
+<rect class="a" x="210" y="10" width="120" height="34" rx="6"/><text x="270" y="32" text-anchor="middle">FastAPI</text>
+<rect class="g" x="410" y="10" width="120" height="34" rx="6"/><text x="470" y="32" text-anchor="middle">HANA (Layer A)</text>
+<rect class="b" x="610" y="10" width="120" height="34" rx="6"/><text x="670" y="32" text-anchor="middle">Approver</text>
+<rect class="w" x="810" y="10" width="150" height="34" rx="6"/><text x="885" y="32" text-anchor="middle">S/4 via connector</text></g>
+<path class="l" d="M70 44v190M270 44v190M470 44v190M670 44v190M885 44v190"/>
+<g class="m"><text x="80" y="70">1 Adopt (run, candidate, target order)</text><text x="280" y="92">2 validate · save STAGED</text><text x="480" y="114">3 notify approver</text><text x="680" y="136">4 approve</text><text x="280" y="158">5 pre-check order still changeable</text><text x="280" y="180">6 call SAP (idempotency key)</text><text x="480" y="202">7 SENT / CONFIRMED / FAILED + audit</text><text x="80" y="224">8 status shown on the card</text></g>
+<path class="l" d="M70 76h200M270 98h200M470 120h200M670 142h-400M270 164h615M270 186h615M270 208h200M270 230h-200"/>
+</svg>
+</section>
+
+<section class="page" id="s5">
+<h2>5. Low-level design — data model</h2>
+<p class="lead">PostgreSQL syntax for local build, HANA mapping in 5.6. The four core tables (Layer M) map one-to-one to the Excel Requirements sheet and to FDS datasets already built in <code>paint_etl/db/schema.sql</code>.</p>
+<h3>5.1 Layer M — the 4 core master tables</h3>
+<div class="tw"><table><thead><tr><th>Table</th><th>Excel object</th><th>SAP source</th><th>Already have</th></tr></thead><tbody>
+<tr><td><code>m_material</code></td><td>Material Master</td><td>MARA, MARC, MAKT, MBEW</td><td><code>sap_material*</code> drafts (extend)</td></tr>
+<tr><td><code>m_bom</code></td><td>BOM (header + item, flattened)</td><td>API_BILL_OF_MATERIAL_SRV</td><td><code>ds1_bom_components</code> (FDS, 23 fields)</td></tr>
+<tr><td><code>m_recipe</code></td><td>Routing / master recipe</td><td>API_MASTERRECIPE_0001</td><td><code>ds3_master_recipe</code> (FDS, 17 fields)</td></tr>
+<tr><td><code>m_production_version</code></td><td>Production version</td><td>API_PRODUCT_SRV</td><td><code>ds2_production_version</code> (FDS, 12 fields)</td></tr>
+</tbody></table></div>
+<pre>-- m_material : one row per material + plant (MARA + MARC + MAKT + cost from MBEW)
+CREATE TABLE m_material (
+  material            VARCHAR(40)  NOT NULL,          -- MATNR
+  plant               VARCHAR(4)   NOT NULL,          -- WERKS
+  description         VARCHAR(40),                    -- MAKT-MAKTX
+  material_type       VARCHAR(4),                     -- MARA-MTART FERT/HALB/ROH/VERP
+  cross_plant_status  VARCHAR(2),                     -- MARA-MSTAE
+  plant_status        VARCHAR(2),                     -- MARC-MMSTA
+  deletion_flag       BOOLEAN NOT NULL DEFAULT FALSE, -- MARA-LVORM / MARC-LVORM
+  procurement_type    VARCHAR(1),                     -- MARC-BESKZ E in-house / F external
+  mrp_type            VARCHAR(2),                     -- MARC-DISMM
+  mrp_controller      VARCHAR(3),                     -- MARC-DISPO
+  base_unit           VARCHAR(3),                     -- MARA-MEINS
+  batch_managed       BOOLEAN,                        -- MARA/MARC-XCHPF
+  material_grade      VARCHAR(18),                    -- OPEN: which SAP field holds "grade"
+  price_control       VARCHAR(1),                     -- MBEW-VPRSV S / V
+  standard_price      NUMERIC(15,5),                  -- MBEW-STPRS
+  moving_price        NUMERIC(15,5),                  -- MBEW-VERPR
+  price_unit          NUMERIC(5,0),                   -- MBEW-PEINH
+  currency            VARCHAR(5),
+  stock_unrestricted  NUMERIC(15,3),                  -- MARD-LABST summed
+  loaded_run_id       BIGINT,                         -- extraction run
+  loaded_at           TIMESTAMP NOT NULL DEFAULT now(),
+  PRIMARY KEY (material, plant)
+);
+
+-- m_bom, m_recipe, m_production_version: use the existing FDS tables unchanged
+--   m_bom                = ds1_bom_components      (23 columns)
+--   m_recipe             = ds3_master_recipe       (17 columns)
+--   m_production_version = ds2_production_version  (12 columns)
+-- (rename or create views with these names; column lists are in BOM_Data_Summary.html)</pre>
+<h3>5.2 Layer T — transactional</h3>
+<pre>CREATE TABLE t_process_order (
+  order_no          CHAR(12) PRIMARY KEY,             -- AUFNR, zero padded
+  plant             VARCHAR(4) NOT NULL,
+  material          VARCHAR(40) NOT NULL,
+  order_type        VARCHAR(4),                       -- AUART
+  system_status     VARCHAR(60),                      -- e.g. REL, TECO, DLV
+  planned_start     DATE,                             -- header start date (season driver)
+  actual_start      DATE,
+  delivered_date    DATE,                             -- JCDS I0012 latest
+  target_qty        NUMERIC(15,3), base_unit VARCHAR(3),
+  production_version VARCHAR(4),                      -- VERID
+  bom_ref           VARCHAR(20), recipe_group VARCHAR(8), recipe_counter VARCHAR(2),
+  production_line   VARCHAR(20),                      -- work centre / line. OPEN: which field
+  parent_order_no   CHAR(12) REFERENCES t_process_order(order_no),  -- rework hierarchy. OPEN (Questions 1-3)
+  order_role        VARCHAR(10) DEFAULT 'ORIGINAL',   -- ORIGINAL | REWORK
+  loaded_at TIMESTAMP DEFAULT now()
+);
+CREATE TABLE t_process_order_component (
+  order_no CHAR(12) REFERENCES t_process_order(order_no), item_no VARCHAR(4),
+  component VARCHAR(40) NOT NULL, required_qty NUMERIC(15,3), withdrawn_qty NUMERIC(15,3),
+  unit VARCHAR(3), batch VARCHAR(10), PRIMARY KEY (order_no, item_no)     -- RESB
+);
+CREATE TABLE t_process_order_operation (
+  order_no CHAR(12) REFERENCES t_process_order(order_no), operation_no VARCHAR(4),
+  work_center VARCHAR(8), standard_hours NUMERIC(11,3), actual_hours NUMERIC(11,3),
+  PRIMARY KEY (order_no, operation_no)                                    -- AFVC / AFRU
+);
+CREATE TABLE t_goods_movement (
+  movement_id BIGSERIAL PRIMARY KEY, order_no CHAR(12) NOT NULL, doc_no VARCHAR(10), doc_year VARCHAR(4),
+  movement_type VARCHAR(3) NOT NULL,                -- 261 issue; others later
+  material VARCHAR(40), qty NUMERIC(15,3), unit VARCHAR(3), amount NUMERIC(15,2), posting_date DATE
+);                                                  -- = stg_order_rework (paint data) widened
+CREATE TABLE t_planned_order (
+  planned_order_no VARCHAR(10) PRIMARY KEY, plant VARCHAR(4), material VARCHAR(40),
+  qty NUMERIC(15,3), unit VARCHAR(3), start_date DATE, finish_date DATE, bom_ref VARCHAR(20),
+  production_version VARCHAR(4), status VARCHAR(10)
+);
+CREATE TABLE t_rework_link (                        -- the Questions sheet, rows 1-3. DEFINITION OPEN
+  rework_order_no CHAR(12) PRIMARY KEY, original_order_no CHAR(12) NOT NULL,
+  cycle_no SMALLINT NOT NULL DEFAULT 1, link_source VARCHAR(20)   -- SAP_LINK | INFERRED_261
+);</pre>
+<div class="callout">Existing paint tables map in: <code>stg_order_base</code> → <code>t_process_order</code>, <code>stg_order_rework</code> → <code>t_goods_movement</code> (movement 261 lines), <code>stg_order_status</code> → delivered date. Paint data has no component quantities, so candidate quantities from history are only possible once process-order components (RESB) are extracted.</div>
+<h3>5.3 Layer R — refined</h3>
+<pre>CREATE TABLE r_candidate (
+  candidate_id   BIGSERIAL PRIMARY KEY,
+  material       VARCHAR(40) NOT NULL, plant VARCHAR(4) NOT NULL,
+  candidate_type VARCHAR(12) NOT NULL,              -- STANDARD | ALTERNATE | HISTORICAL
+  bom_ref        VARCHAR(20), bom_variant VARCHAR(2), production_version VARCHAR(4),
+  recipe_group   VARCHAR(8),  recipe_counter VARCHAR(2),
+  signature      CHAR(64) NOT NULL,                 -- SHA-256 of sorted (component, qty per base unit)
+  valid_from DATE, valid_to DATE,
+  built_run_id BIGINT, UNIQUE (material, plant, signature)
+);
+CREATE TABLE r_candidate_item (
+  candidate_id BIGINT REFERENCES r_candidate ON DELETE CASCADE, component VARCHAR(40),
+  qty_per_base NUMERIC(15,6) NOT NULL, unit VARCHAR(3), is_phantom BOOLEAN DEFAULT FALSE,
+  PRIMARY KEY (candidate_id, component)
+);
+CREATE TABLE r_candidate_stats (
+  candidate_id BIGINT PRIMARY KEY REFERENCES r_candidate ON DELETE CASCADE,
+  times_used INT, last_used_date DATE, first_used_date DATE,
+  avg_reprocess_cycles NUMERIC(6,2),                -- from t_rework_link
+  cycle1_pct NUMERIC(5,2), cycle2_pct NUMERIC(5,2), cycle3_pct NUMERIC(5,2),   -- the 78/96/100 strip
+  cost_per_unit NUMERIC(15,5),                      -- from m_material prices, see 7.2
+  operation_hours NUMERIC(11,3), lead_time_days NUMERIC(8,2),
+  season_counts JSONB,                              -- {"WINTER":3,"SUMMER":9,...}
+  lines_used JSONB,                                 -- {"LINE01":12}
+  computed_at TIMESTAMP DEFAULT now()
+);</pre>
+<h3>5.4 Layer A — application, rules and decisions</h3>
+<pre>CREATE TABLE a_criterion (                          -- what the user can pick as Rank 1..4
+  criterion_code VARCHAR(20) PRIMARY KEY,           -- COST, RECENCY, REWORK_CYCLES, SEASON, PRODUCTION_LINE, EFFICIENCY
+  label VARCHAR(60) NOT NULL, direction VARCHAR(3) NOT NULL CHECK (direction IN ('MIN','MAX')),
+  metric_expr VARCHAR(200) NOT NULL,                -- column in r_candidate_stats or registered function
+  tie_band_pct NUMERIC(5,2) DEFAULT 0,              -- see 7.3
+  active BOOLEAN DEFAULT TRUE, sort_order INT
+);
+CREATE TABLE a_rule (                               -- the rule engine's catalogue
+  rule_id VARCHAR(10) PRIMARY KEY,                  -- R-01 ...
+  name VARCHAR(100) NOT NULL, description TEXT,
+  rule_type VARCHAR(12) NOT NULL CHECK (rule_type IN ('HARD','WARN','FILTER','FLAG')),
+  scope VARCHAR(12) NOT NULL,                       -- MATERIAL | COMPONENT | CANDIDATE | ORDER
+  handler VARCHAR(60) NOT NULL,                     -- registered python function name
+  params JSONB DEFAULT '{}',                        -- e.g. {"types":["VERP"]}
+  exec_order INT NOT NULL,                          -- evaluation order
+  source VARCHAR(12) NOT NULL,                      -- EXCEL | OLD_CODE | PROPOSED | CLIENT_CONFIRMED
+  active BOOLEAN DEFAULT TRUE, version INT DEFAULT 1,
+  valid_from DATE, valid_to DATE, updated_by VARCHAR(80), updated_at TIMESTAMP DEFAULT now()
+);
+CREATE TABLE a_rule_set (                           -- a named, versioned bundle; a run records its id
+  rule_set_id SERIAL PRIMARY KEY, name VARCHAR(60), version INT, rule_ids JSONB, active BOOLEAN, created_at TIMESTAMP DEFAULT now()
+);
+CREATE TABLE a_season_map (month SMALLINT PRIMARY KEY CHECK (month BETWEEN 1 AND 12), season VARCHAR(20) NOT NULL);
+CREATE TABLE a_legal_status (                       -- SOURCE OPEN; manual or imported until client names the system
+  material VARCHAR(40), plant VARCHAR(4), status VARCHAR(10) NOT NULL,   -- APPROVED | PENDING | RESTRICTED
+  note VARCHAR(200), valid_from DATE, valid_to DATE, source VARCHAR(30), PRIMARY KEY (material, plant)
+);
+CREATE TABLE a_ranking_run (
+  run_id UUID PRIMARY KEY, requested_by VARCHAR(80) NOT NULL, requested_at TIMESTAMP DEFAULT now(),
+  plant VARCHAR(4) NOT NULL, material VARCHAR(40), planned_order VARCHAR(10), process_order CHAR(12), production_line VARCHAR(20),
+  anchor_type VARCHAR(10), baseline_candidate_id BIGINT, target_date DATE,
+  rule_set_id INT, data_as_of TIMESTAMP, status VARCHAR(10), duration_ms INT
+);
+CREATE TABLE a_ranking_run_criterion (
+  run_id UUID REFERENCES a_ranking_run, rank_no SMALLINT CHECK (rank_no BETWEEN 1 AND 4),
+  criterion_code VARCHAR(20) REFERENCES a_criterion, PRIMARY KEY (run_id, rank_no)
+);
+CREATE TABLE a_ranking_result (
+  run_id UUID REFERENCES a_ranking_run, candidate_id BIGINT REFERENCES r_candidate,
+  rank_no INT, feasible BOOLEAN NOT NULL, violations JSONB, warnings JSONB,
+  metrics JSONB NOT NULL,                           -- {cost_per_unit, cost_change_pct, avg_cycles, baseline_cycles, ...}
+  reason_text TEXT, legal_status VARCHAR(10), PRIMARY KEY (run_id, candidate_id)
+);
+CREATE TABLE a_adoption (
+  adoption_id UUID PRIMARY KEY, run_id UUID NOT NULL, candidate_id BIGINT NOT NULL, target_order CHAR(12) NOT NULL,
+  idempotency_key CHAR(64) UNIQUE NOT NULL,
+  status VARCHAR(12) NOT NULL,                      -- STAGED, APPROVED, REJECTED, SENDING, CONFIRMED, FAILED, CANCELLED
+  requested_by VARCHAR(80), requested_at TIMESTAMP DEFAULT now(), reason TEXT,
+  approved_by VARCHAR(80), approved_at TIMESTAMP,
+  sap_request JSONB, sap_response JSONB, sap_http_status INT, error_text TEXT, attempts INT DEFAULT 0, last_attempt_at TIMESTAMP
+);
+CREATE TABLE a_audit_log (
+  audit_id BIGSERIAL PRIMARY KEY, event_type VARCHAR(30) NOT NULL, entity_type VARCHAR(30), entity_id VARCHAR(60),
+  actor VARCHAR(80), details JSONB, created_at TIMESTAMP DEFAULT now()
+);
+CREATE TABLE a_extraction_job (                     -- = FDS job_run, generalised
+  job_id BIGSERIAL PRIMARY KEY, job_type VARCHAR(20), scope JSONB, status VARCHAR(10),
+  started_at TIMESTAMP, finished_at TIMESTAMP, rows_loaded BIGINT, message TEXT
+);</pre>
+<h3>5.5 Seed data for rules and criteria</h3>
+<pre>INSERT INTO a_criterion VALUES
+ ('COST','Total cost','MIN','cost_per_unit',2.0,TRUE,1),
+ ('RECENCY','Most recently used','MAX','last_used_date',0,TRUE,2),
+ ('REWORK_CYCLES','Reprocess cycles','MIN','avg_reprocess_cycles',0.25,TRUE,3),
+ ('SEASON','Season match','MAX','season_match',0,TRUE,4),
+ ('PRODUCTION_LINE','Production line match','MAX','line_match',0,TRUE,5),
+ ('EFFICIENCY','Operation hours','MIN','operation_hours',2.0,TRUE,6);
+INSERT INTO a_season_map VALUES (1,'WINTER'),(2,'WINTER'),(3,'SUMMER'),(4,'SUMMER'),(5,'SUMMER'),
+ (6,'MONSOON'),(7,'MONSOON'),(8,'MONSOON'),(9,'MONSOON'),(10,'POST_MONSOON'),(11,'POST_MONSOON'),(12,'WINTER');
+-- season buckets are the old-code default (Indian calendar); the client has NOT confirmed them</pre>
+<h3>5.6 PostgreSQL to HANA mapping</h3>
+<div class="tw"><table><thead><tr><th>PostgreSQL</th><th>HANA Cloud</th></tr></thead><tbody>
+<tr><td>BIGSERIAL</td><td>BIGINT GENERATED BY DEFAULT AS IDENTITY</td></tr><tr><td>JSONB</td><td>NCLOB with JSON functions (or store as NVARCHAR)</td></tr>
+<tr><td>BOOLEAN</td><td>BOOLEAN</td></tr><tr><td>UUID</td><td>NVARCHAR(36)</td></tr><tr><td>TIMESTAMP DEFAULT now()</td><td>TIMESTAMP DEFAULT CURRENT_TIMESTAMP</td></tr>
+<tr><td>VARCHAR(n)</td><td>NVARCHAR(n)</td></tr><tr><td>COPY bulk load</td><td>IMPORT / batched INSERT via hdbcli</td></tr></tbody></table></div>
+<p class="k">The Python layer uses a thin repository module so only SQL dialect lines change; avoid Postgres-only features (ON CONFLICT becomes MERGE).</p>
+</section>
+
+<section class="page" id="s6">
+<h2>6. Rules engine</h2>
+<h3>6.1 Design</h3>
+<ul class="tight">
+<li>Rules are rows in <code>a_rule</code>. Each points to a registered Python <b>handler</b> function plus JSON <b>params</b>; no free-form code is stored in the database.</li>
+<li>Types: <b>HARD</b> (candidate infeasible, with reason), <b>WARN</b> (shown, still rankable), <b>FILTER</b> (removed before ranking), <b>FLAG</b> (adds a badge, e.g. legal yellow).</li>
+<li>Rules run in <code>exec_order</code>. The set used is versioned in <code>a_rule_set</code> and stored on every run.</li>
+<li>Ranking criteria are separate (<code>a_criterion</code>): the user chooses and orders them per run; the rules decide <i>who may compete</i>.</li>
+<li>Admin screen: list, enable / disable, edit params, reorder, with every change in <code>a_audit_log</code>.</li>
+</ul>
+<pre>handler signature:  def rule_x(candidate, context, params) -> RuleResult(passed: bool, message: str)
+engine:  for rule in active_rules_in_order: result = HANDLERS[rule.handler](c, ctx, rule.params)
+         HARD fail -> feasible=False + violation text ; WARN -> warning ; FLAG -> badge</pre>
+<h3>6.2 Rule catalogue (starting set)</h3>
+<p class="lead">This is the honest answer to "are rules in Excel?". Source column: <span class="pill ok">EXCEL</span> a remark exists, parameters do not; <span class="pill info">OLD CODE</span> already implemented in <code>rule_engine.py</code>; <span class="pill warn">PROPOSED</span> mine, needs client approval.</p>
+<div class="tw"><table><thead><tr><th>ID</th><th>Rule</th><th>Type</th><th>Source</th><th>Parameters / status</th></tr></thead><tbody>
+<tr><td>R-01</td><td>Components must be active (status, not marked for deletion)</td><td>HARD</td><td><span class="pill ok">EXCEL</span> <span class="pill info">OLD CODE</span></td><td>Which status codes count as active is unknown.</td></tr>
+<tr><td>R-02</td><td>Only finished (FERT) and intermediate (HALB) materials get BOM / recipe candidates</td><td>FILTER</td><td><span class="pill ok">EXCEL</span></td><td>Material fields sheet</td></tr>
+<tr><td>R-03</td><td>Ignore non-stock items (text, non-stock) when costing</td><td>FILTER</td><td><span class="pill info">OLD CODE</span></td><td>Item categories T, N</td></tr>
+<tr><td>R-04</td><td>Phantom assemblies are exploded through, not costed as stock</td><td>FILTER</td><td><span class="pill ok">EXCEL</span> (Sheet2 shows Phantom)</td><td>Explosion depth rule to confirm</td></tr>
+<tr><td>R-05</td><td>Final quantity = recipe quantity + sum of goods issues 261</td><td>CALC</td><td><span class="pill ok">EXCEL</span></td><td>Algorithm 4. Used when building HISTORICAL candidates.</td></tr>
+<tr><td>R-06</td><td>Component raw-material grade must be acceptable for the order</td><td>HARD</td><td><span class="pill ok">EXCEL</span> (vague)</td><td>Needs definition: which field is "grade"?</td></tr>
+<tr><td>R-07</td><td>Raw-material availability (planned-order simulation)</td><td>WARN</td><td><span class="pill ok">EXCEL</span></td><td>Compare required vs unrestricted stock; threshold unknown</td></tr>
+<tr><td>R-08</td><td>Candidate valid on the order's planned start date (production-version validity window)</td><td>HARD</td><td><span class="pill ok">EXCEL</span> (season / start date) <span class="pill info">OLD CODE</span></td><td>MKAL ADATU / BDATU</td></tr>
+<tr><td>R-09</td><td>Prefer candidates run on the same production line</td><td>FLAG / criterion</td><td><span class="pill ok">EXCEL</span></td><td>Line field source open</td></tr>
+<tr><td>R-10</td><td>Legal approval: show yellow / green; block adopt while not approved</td><td>FLAG + HARD at adopt</td><td><span class="pill ok">EXCEL</span> (colours only)</td><td>Source system unknown; placeholder rule marks type VERP</td></tr>
+<tr><td>R-11</td><td>Customer component restriction (avoid-list per customer)</td><td>HARD</td><td><span class="pill ok">EXCEL</span> (question only)</td><td>Needs data source</td></tr>
+<tr><td>R-12</td><td>Components must exist in material master</td><td>HARD</td><td><span class="pill info">OLD CODE</span></td><td>—</td></tr>
+<tr><td>R-13</td><td>User avoid-list, max components, minimum quantity per component</td><td>HARD</td><td><span class="pill info">OLD CODE</span></td><td>From request constraints</td></tr>
+<tr><td>R-14</td><td>Minimum number of historical uses before a HISTORICAL candidate is trusted</td><td>WARN</td><td><span class="pill warn">PROPOSED</span></td><td>default 3</td></tr>
+<tr><td>R-15</td><td>Exclude candidates whose cycle data is missing from cycle ranking, flag as "no evidence"</td><td>WARN</td><td><span class="pill warn">PROPOSED</span></td><td>—</td></tr>
+<tr><td>R-16</td><td>Do not propose the baseline itself as an improvement</td><td>FILTER</td><td><span class="pill warn">PROPOSED</span></td><td>Baseline is shown as reference</td></tr>
+</tbody></table></div>
+<div class="callout"><b>"Industry level rules"</b> (for example regulatory limits on specific substances, compatibility, concentration limits) are <b>not written anywhere we hold</b>. The engine will support them as rows, but someone from the client's formulation or regulatory team has to supply them. Plan a rules workshop (section 12).</div>
+</section>
+
+<section class="page" id="s7">
+<h2>7. Ranking and metrics</h2>
+<h3>7.1 How ranking works</h3>
+<ol class="tight">
+<li>Hard rules split candidates into feasible and infeasible (infeasible are listed last with reasons).</li>
+<li>Within feasible, sort by Rank 1, then Rank 2, then Rank 3, then Rank 4 (<b>lexicographic</b>, the existing <code>rank_by_criteria</code>). Last tie-breaks: more historical uses, then candidate id, so results are stable.</li>
+<li>Each criterion has a direction (cost lower is better, recency newer is better).</li>
+<li>A plain-English "why" is generated from the values (existing <code>build_rank_reason</code>).</li>
+</ol>
+<h3>7.2 Metric definitions (to confirm with the client)</h3>
+<div class="tw"><table><thead><tr><th>Metric</th><th>Proposed definition</th><th>Status</th></tr></thead><tbody>
+<tr><td>Cost per unit</td><td>Sum over components of qty per base unit × (moving or standard price ÷ price unit) from <code>m_material</code>. Cost change % = (candidate − baseline) ÷ baseline.</td><td>Price field not confirmed. Paint orders have material cost 0, so MBEW is needed.</td></tr>
+<tr><td>Avg reprocess cycles</td><td>For all past orders on this candidate: number of linked rework orders, averaged. "2 vs 6" = candidate vs baseline.</td><td>Rework linkage undefined (Questions 1–3). Interim proxy from paint data is weak (movement 261 lines).</td></tr>
+<tr><td>Cycle strip (78% / 96% / 100%)</td><td>Share of batches finished within 1, 2, 3 cycles.</td><td>My reading of the screenshot.</td></tr>
+<tr><td>Recency</td><td>Date the candidate was last used on a delivered order.</td><td>OK</td></tr>
+<tr><td>Season match</td><td>Share of past uses in the same season as the order's planned start (existing <code>season_match_score</code>).</td><td>Season buckets unconfirmed.</td></tr>
+<tr><td>Efficiency</td><td>Sum of standard operation hours (and lead time) from the recipe / order operations.</td><td>OK once operations load.</td></tr>
+</tbody></table></div>
+<h3>7.3 A weakness to fix before building</h3>
+<div class="callout">With strict lexicographic ranking and decimal values such as cost, two candidates almost never tie on Rank 1, so Rank 2 to 4 would almost never matter, and the user's extra choices would look ignored. Fix: each criterion has a <b>tie band</b> (<code>a_criterion.tie_band_pct</code>). Values within the band count as equal, so the next rank decides. Example: cost within 2% = tie. The old engine does not do this yet.</div>
+</section>
+
+<section class="page" id="s8">
+<h2>8. API design (FastAPI)</h2>
+<p class="lead">Mostly existing endpoints kept (marked KEEP), with changes and additions.</p>
+<div class="tw"><table><thead><tr><th>Method and path</th><th>Purpose</th><th>Status</th></tr></thead><tbody>
+<tr><td><code>GET /api/production/lines?plant=</code></td><td>Production lines for a plant</td><td>KEEP, re-source from Layer T</td></tr>
+<tr><td><code>GET /api/production/planned-orders?plant=&amp;material=</code></td><td>Dropdown data</td><td>KEEP</td></tr>
+<tr><td><code>GET /api/production/process-orders?plant=&amp;material=</code></td><td>Dropdown data</td><td>KEEP</td></tr>
+<tr><td><code>GET /api/criteria</code></td><td>Rank dropdown contents from <code>a_criterion</code></td><td>NEW</td></tr>
+<tr><td><code>POST /api/production/analyze</code></td><td>Run the persona analysis</td><td>KEEP, change inputs to Layer R / A</td></tr>
+<tr><td><code>POST /api/production/compare</code></td><td>Current vs proposed BOM</td><td>KEEP</td></tr>
+<tr><td><code>GET /api/production/chain/{order}</code></td><td>Rework chain of an order</td><td>KEEP, use <code>t_rework_link</code></td></tr>
+<tr><td><code>GET /api/runs/{run_id}</code></td><td>Re-open a stored analysis</td><td>NEW</td></tr>
+<tr><td><code>POST /api/production/adopt</code></td><td>Request adoption (STAGED)</td><td>CHANGE (today it only logs)</td></tr>
+<tr><td><code>POST /api/adoptions/{id}/approve</code> · <code>/reject</code> · <code>/retry</code></td><td>Approver actions</td><td>NEW</td></tr>
+<tr><td><code>GET /api/adoptions/{id}</code></td><td>Status for the card</td><td>NEW</td></tr>
+<tr><td><code>GET/PUT /api/admin/rules</code>, <code>/admin/rules/{id}</code>, <code>/admin/criteria</code>, <code>/admin/season-map</code>, <code>/admin/legal-status</code></td><td>Rule admin</td><td>NEW</td></tr>
+<tr><td><code>POST /api/upload</code>, <code>GET /api/jobs</code>, <code>/api/overview</code>, <code>/api/table/{name}</code>, <code>/api/checks</code></td><td>Data ingestion (from paint_etl)</td><td>KEEP, merge</td></tr>
+<tr><td><code>POST /api/extraction/run</code>, <code>GET /api/extraction/jobs</code></td><td>Trigger and watch SAP extraction</td><td>NEW</td></tr>
+<tr><td><code>/api/auth/*</code>, <code>/api/admin/users</code></td><td>Login, roles</td><td>KEEP (replace by XSUAA on BTP)</td></tr>
+</tbody></table></div>
+<h3>Analyze: request and response</h3>
+<pre>POST /api/production/analyze
+{ "plant":"US01", "material":"F0001", "planned_order":null, "process_order":null,
+  "production_line":"LINE01",
+  "criteria":[{"rank":1,"criterion":"COST"},{"rank":2,"criterion":"REWORK_CYCLES"}] }
+
+200 { "run_id":"7f3c...", "anchor":{"type":"MATERIAL","material":"F0001","target_date":"2026-12-01","season":"WINTER"},
+      "baseline":{"candidate_id":101,"cost_per_unit":12.40,"avg_cycles":6},
+      "results":[
+        {"rank":1,"candidate_id":205,"material":"F0001","production_version":"0002",
+         "avg_cycles":3.0,"baseline_cycles":6.0,"cost_per_unit":7.44,"cost_change_pct":-40.0,
+         "cycle_strip":[78,96,100],"legal_status":"PENDING","feasible":true,"warnings":[],
+         "reason":"40% lower total cost than the current BOM, 3 reprocess cycles vs 6, used 14 times" } ] }</pre>
+<h3>Adopt: request and response</h3>
+<pre>POST /api/production/adopt
+{ "run_id":"7f3c...", "candidate_id":205, "target_order":"000000600001", "reason":"lower cost" }
+202 { "adoption_id":"a91b...", "status":"STAGED", "needs_approval":true }
+-- rejected with 409 if legal_status is not APPROVED, or the order is no longer changeable</pre>
+<p><b>Errors:</b> 400 validation · 401/403 auth · 404 unknown run or candidate · 409 state conflict (already adopted, legal block, order closed) · 502 SAP unreachable (adoption stays retryable).</p>
+</section>
+
+<section class="page" id="s9">
+<h2>9. UI design (React)</h2>
+<p class="lead">One persona, one screen, laid out like the Excel screenshot.</p>
+<pre>+------------------------------------------------------------------------------+
+| Selection                                                                    |
+| Plant* [____]  Material [____]  Planned order [____]  Process order [____]   |
+| Production line [____]                                                       |
+| Rank 1 [Cost v]  Rank 2 [Avg cycles v]  Rank 3 [____ v]  Rank 4 [____ v]  [ Go ]|
++------------------------------------------------------------------------------+
+| 1  Material F0001  Prod Version 0002  Avg cycles 3         [Proposed Recipe]   |
+|    Avg reprocess cycles   3 vs 6                       78% Cycle 1  [ Adopt ]   |
+|    Cost                   30% reduction                96% Cycle 2              |
+|    Why: 30% lower cost, 3 cycles vs 6, used 14 times   100% Cycle 3 [Legal: green]|
+| 2  ...                                                                          |
++------------------------------------------------------------------------------+</pre>
+<h3>Behaviour</h3>
+<ul class="tight">
+<li>Plant is mandatory; Go disabled until set. Giving a process or planned order fills material and line automatically.</li>
+<li>Rank dropdowns offer only criteria from <code>/api/criteria</code>; a criterion can be used once.</li>
+<li>Legal chip: green approved, yellow pending, red restricted. Adopt is disabled unless green (rule R-10).</li>
+<li>Proposed Recipe opens a side-by-side panel: current vs proposed components, quantities, operations, differences highlighted.</li>
+<li>Adopt asks for a reason, then shows the staged status; the card updates through polling <code>/api/adoptions/{id}</code>.</li>
+<li>Admin screens (rules, criteria, season map, legal status) are separate pages for the rule admin role.</li>
+<li>Empty and error states: no candidates, no history (show "no evidence" instead of 0 cycles), SAP unreachable.</li>
+</ul>
+</section>
+
+<section class="page" id="s10">
+<h2>10. Adopt and the SAP connection</h2>
+<h3>Path</h3>
+<p>FastAPI worker → BTP <b>Destination</b> (points at S/4 with the user's identity or a technical user) → <b>Connectivity service</b> → <b>Cloud Connector</b> → S/4HANA OData. The Cloud Connector link in the chat thread is for the tunnel only.</p>
+<h3>Write steps</h3>
+<ol class="tight">
+<li>Pre-check, read live from SAP: order exists, status still allows change (not confirmed, not TECO), version/ETag unchanged since analysis.</li>
+<li>Build the change: replace component list and quantities (and operations if the recipe differs).</li>
+<li>Send with an idempotency key; keep request and response in <code>a_adoption</code>.</li>
+<li>On success set CONFIRMED; on SAP error keep FAILED with the message; <b>retry</b> only reuses the same key.</li>
+<li>Re-read the order and store the SAP-side result as proof.</li>
+</ol>
+<h3>Candidate SAP APIs</h3>
+<div class="callout"><b>Not verified.</b> Likely standard options are the Process Order OData service (for components and operations of a process order) and the Bill of Material service (which allows changes to a BOM). Which one, and whether a released order can be changed this way, must be confirmed by the SAP team; the Excel says only "sync". Changing the master BOM is a bigger action than changing one order and should not be done by Adopt without explicit agreement.</div>
+<h3>Safety</h3>
+<ul class="tight"><li>No write without approval and a green legal status.</li><li>A feature switch <code>SAP_WRITE_ENABLED</code> off by default; today's code already only stages.</li><li>Full audit: who requested, who approved, what was sent, what came back.</li></ul>
+</section>
+
+<section class="page" id="s11">
+<h2>11. What from the existing code we can reuse</h2>
+<p class="lead">The old backend already implements most of this persona. It was built on demo data in SQLite.</p>
+<div class="tw"><table><thead><tr><th>Existing piece</th><th>What it does</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><code>routes/production.py</code></td><td>lines, planned and process orders, analyze, compare, chain, adopt</td><td><span class="pill ok">Extend</span> — adopt must become a real workflow</td></tr>
+<tr><td><code>decision_core/ranking_engine.py</code></td><td>lexicographic ranking by ordered criteria, "why" text</td><td><span class="pill ok">Keep</span> + add tie bands</td></tr>
+<tr><td><code>decision_core/rule_engine.py</code>, <code>constraint_engine.py</code></td><td>hard rules in Python code</td><td><span class="pill warn">Refactor</span> into handlers driven by <code>a_rule</code></td></tr>
+<tr><td><code>season_engine.py</code></td><td>month to season, season match</td><td><span class="pill ok">Keep</span>, read map from <code>a_season_map</code></td></tr>
+<tr><td><code>cost_engine</code>, <code>cycle_engine</code>, <code>candidate_engine</code>, <code>production_version_engine</code></td><td>cost, cycles, candidates</td><td><span class="pill warn">Rewire</span> to Layer R / M. Internals now reviewed, see 11.1 for what must change</td></tr>
+<tr><td><code>scoring_engine.py</code></td><td>weighted heuristic scores (old Phase 0)</td><td><span class="pill bad">Retire</span> — the client asked for ordered ranks, not weights</td></tr>
+<tr><td>auth, RBAC, audit log, menu, rate limit</td><td>login, roles, pages</td><td><span class="pill ok">Keep</span>, swap login for XSUAA on BTP</td></tr>
+<tr><td><code>Decision</code> and <code>AuditLog</code> models</td><td>stored decision with candidates</td><td><span class="pill ok">Map</span> to <code>a_ranking_run/result</code> and <code>a_audit_log</code></td></tr>
+<tr><td><code>connectors/excel_connector.py</code>, demo generators</td><td>demo data</td><td><span class="pill bad">Retire</span> — replaced by <code>paint_etl</code> loaders and SAP extraction</td></tr>
+<tr><td>React <code>ProductionPersona.tsx</code>, <code>Decisions.tsx</code>, admin pages, API hooks</td><td>current screens</td><td><span class="pill ok">Extend</span> — align with section 9; the old page was drawn from the same Excel</td></tr>
+<tr><td><code>paint_etl</code> (new)</td><td>upload, inbox worker, paint tables, checks</td><td><span class="pill ok">Keep</span> as the ingestion module; load into Layer T</td></tr>
+</tbody></table></div>
+<h3>11.1 Review of the old decision engines (code read in full)</h3>
+<p class="lead">Files read: production, cost, cycle, consumption, candidate, explosion, material, recipe, availability, production-version, season, ranking, rule and constraint-taxonomy engines. Nothing was run; findings come from reading the code.</p>
+<div class="tw"><table><thead><tr><th>#</th><th>Finding</th><th>Effect</th><th>Fix in new design</th></tr></thead><tbody>
+<tr><td>1</td><td><b>Actual consumption is fetched but not used in cost.</b> <code>build_component_details</code> stores <code>actual_quantity</code> for display, yet <code>extended_cost</code> is computed from the planned quantity only.</td><td>RTM Algorithm 4 (recipe + goods issues 261 = final quantity) is not applied to cost.</td><td>Cost on final quantity (R-05). Also scale per-run actuals by the quantity factor, which the code does not.</td></tr>
+<tr><td>2</td><td><b>Candidate signature is too strict.</b> Components are grouped by exact (component, quantity rounded to 4 decimals, unit) and the quantity is not divided by the order's batch size.</td><td>Same recipe at two batch sizes, or actuals differing by a gram, become separate candidates; counts of "times used" shrink.</td><td>Signature on quantity per base unit, with a tolerance band (for example 1%). Signature also ignores production version and recipe; decide if they belong in it.</td></tr>
+<tr><td>3</td><td><b>Candidates come only from stored order headers.</b> There is no step that adds the standard or alternate BOMs from master data unless they exist as headers.</td><td>"Possible BOMs beyond standard and alternate" (Planning 1) is half covered; unused alternates never appear.</td><td>Candidate types STANDARD, ALTERNATE, HISTORICAL (section 4.2).</td></tr>
+<tr><td>4</td><td><b>Baseline is the most-used historical path</b>, not the BOM of the anchor order.</td><td>"40% reduction" and "2 vs 6" compare against the commonest path, which for a process-order anchor may not be what that order has.</td><td>Baseline = anchor order's own BOM when an order is given; most-used only for a material anchor. Show which one.</td></tr>
+<tr><td>5</td><td><b>Season match uses only the last-used date</b> (<code>[last_used]</code>), although the engine can score the share of all runs in the season.</td><td>Season is 0 or 1 on one run, so it ranks poorly.</td><td>Pass all run dates (stored as <code>season_counts</code>).</td></tr>
+<tr><td>6</td><td><b>Production-version validity is never applied.</b> <code>production_version_engine</code> (validity window, lot-size limits, line filter) is not called by anything. The same is true of the whole <code>constraint_taxonomy</code> module (411 lines: physical, logistical, policy, cost, legal and market placeholders).</td><td>R-08 (valid on start date) and lot-size rules are missing at run time; the taxonomy is dead code.</td><td>Make them handlers in <code>a_rule</code>. Use the taxonomy's seven categories as the rule "category" list for the admin screen.</td></tr>
+<tr><td>7</td><td><b>Cost uses one field</b> (<code>material.cost</code>), with no price unit or price control, and silently uses 0 when missing. Operational cost needs <code>cost_per_hour</code> per operation, which a SAP recipe does not carry (it comes from work-centre activity rates).</td><td>A missing price looks like a free component, the same trap as the zero material cost in the paint data.</td><td>Cost from MBEW price ÷ price unit. A missing price makes the candidate "cost unknown" (warning), never 0. Find the source of hourly rates.</td></tr>
+<tr><td>8</td><td><b>Candidate ids are unstable.</b> Headers are read without an ORDER BY and ids are <code>cand-1..n</code> by arrival order, while ranking tie-breaks on id.</td><td>The "same input, same ranking" promise can break between runs.</td><td>Candidate id from the signature hash (<code>r_candidate</code>), explicit ORDER BY.</td></tr>
+<tr><td>9</td><td><b>Cycles:</b> "avg cycles" = confirmations per order (default 1), "avg reprocess" = number of rework orders linked to the original (default 0). A flat count; the rework hierarchy and quantities (Questions 1–3) are ignored. The 78/96/100 cycle strip is not computed anywhere.</td><td>Matches the Excel's two columns but not its open questions.</td><td>Keep as interim; build the strip from <code>t_rework_link.cycle_no</code>.</td></tr>
+<tr><td>10</td><td><b>Availability is a hard fail for every anchor</b>, although the RTM mentions it only for planned-order simulation.</td><td>A material-only search can mark every path infeasible for lack of stock.</td><td>WARN for material anchor, HARD for planned-order simulation (as R-07).</td></tr>
+<tr><td>11</td><td><b>Anchor handling:</b> material anchor uses a hard-coded quantity of 1000; an order that is not found silently turns into a material search; process-order status must be exactly "Created".</td><td>Typos return plausible-looking results; quantity is invented.</td><td>Require a quantity for a material anchor; return 404 for an unknown order.</td></tr>
+<tr><td>12</td><td><b>Run record:</b> whole candidate list stored as JSON in <code>Decision</code>; no rule-set version; every metric is computed live with per-candidate queries (N+1).</td><td>Not explainable later if rules change; slow on real volumes.</td><td><code>a_ranking_run/result</code> with rule_set_id; pre-computed <code>r_candidate_stats</code>.</td></tr>
+</tbody></table></div>
+<p><b>Verdict:</b> the structure (anchor, window, candidates, cost, cycles, rank, reason, persist) is right and matches the Excel, so keep it. About half of the numbers need correcting as above before they can be trusted on real data. The rework definition and the cost source stay client decisions.</p>
+</section>
+
+<section class="page" id="s12">
+<h2>12. Delivery plan, gaps and decisions needed</h2>
+<h3>Phases</h3>
+<div class="tw"><table><thead><tr><th>Phase</th><th>Work</th><th>Depends on</th></tr></thead><tbody>
+<tr><td>1</td><td>Create Layers M, T, R, A locally. Load paint data into Layer T. Seed rules and criteria. Rewire ranking to read Layer R.</td><td>Nothing external</td></tr>
+<tr><td>2</td><td>Persona UI per section 9; rule admin screens; stored runs; tie bands.</td><td>Phase 1</td></tr>
+<tr><td>3</td><td>BTP deployment: HANA Cloud, XSUAA, app router; porting DDL.</td><td>BTP access (Pushkar)</td></tr>
+<tr><td>4</td><td>SAP extraction (FDS) into Layer M and T; candidate building from real BOMs.</td><td>Cloud Connector, API access, open items</td></tr>
+<tr><td>5</td><td>Adopt workflow to SAP, behind the feature switch.</td><td>SAP API decision, approvals</td></tr>
+</tbody></table></div>
+<h3>Decisions and answers needed</h3>
+<div class="tw"><table><thead><tr><th>#</th><th>Question</th><th>Who</th><th>Blocks</th></tr></thead><tbody>
+<tr><td>1</td><td>Confirm the "4 tables" reading: Material, BOM, Recipe, Production Version as core, with the other layers around them.</td><td>You</td><td>Phase 1</td></tr>
+<tr><td>2</td><td>Define rework / reprocess cycle and how rework orders link to the original (Questions 1–3).</td><td>Client</td><td>Cycles metric</td></tr>
+<tr><td>3</td><td>Which cost field is "cost" (MBEW standard vs moving; price unit)?</td><td>Client / SAP</td><td>Cost metric</td></tr>
+<tr><td>4</td><td>Source of legal approval status and customer component restrictions.</td><td>Client</td><td>R-10, R-11</td></tr>
+<tr><td>5</td><td>Industry rules: who owns them, what format? Hold a rules workshop to turn them into <code>a_rule</code> rows.</td><td>Client</td><td>Rule set</td></tr>
+<tr><td>6</td><td>SAP API and method for Adopt on a process order; can released orders be changed?</td><td>SAP team</td><td>Phase 5</td></tr>
+<tr><td>7</td><td>Meaning of the cycle strip (78/96/100), and which field holds "grade" and "production line".</td><td>Client</td><td>UI and R-06, R-09</td></tr>
+<tr><td>8</td><td>Season buckets; roles and approvers; hosting split (the sheet marks Azure / BTP / ERP).</td><td>Client / you</td><td>Design</td></tr>
+<tr><td>9</td><td>ECC or S/4HANA; archive for legacy history (Questions 6).</td><td>SAP team</td><td>Extraction</td></tr>
+</tbody></table></div>
+<h3>Risks</h3>
+<ul class="tight">
+<li>Rework signal is weak in current data, so cycle ranking could mislead until the definition is fixed.</li>
+<li>Material cost is zero in paint data, so a Cost rank 1 is meaningless until MBEW data arrives.</li>
+<li>Candidate quantities from history need component data (RESB) that the paint files do not contain.</li>
+<li>SAP write path unverified.</li>
+</ul>
+</section>
+</div></body></html>
