@@ -9,3 +9,6 @@ __pycache__/
 *.log
 .vscode/
 .idea/
+
+# Built UI copy served by the API (copy ui/dist here if wanted); not committed
+ui/

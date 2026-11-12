@@ -1,24 +1,38 @@
-# BOM Optimizer API — Phase 0
+# BOM Optimizer API
 
-Enterprise AI Decision Platform for Manufacturing — FastAPI Backend
+Enterprise AI Decision Platform for Manufacturing — FastAPI backend (Phase 0 + Production Persona).
 
-## Quick Start
+## Requirements
+- **Python 3.11 or 3.12** (the Docker image uses 3.11). Newer Python may need unpinned package versions.
+- The UI lives in a separate repo: `bom-optimizer-ui` (runs on http://localhost:5173 and proxies `/api` to this API).
 
-```bash
-# Create virtual environment
+## Quick start (Windows PowerShell)
+
+```powershell
 python -m venv .venv
-.venv\Scripts\activate    # Windows
-# source .venv/bin/activate  # Linux/Mac
-
-# Install dependencies
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-
-# Run the server (auto-creates SQLite DB)
-python run.py
+pip install -r requirements-dev.txt        # only needed to run the tests
+copy .env.example .env                     # then edit if needed (SQLite works out of the box)
+python run.py                              # http://127.0.0.1:8001  (docs at /docs)
 ```
 
-API available at **http://localhost:8000**  
-Swagger docs at **http://localhost:8000/docs**
+Linux / macOS: `source .venv/bin/activate` and `cp .env.example .env`.
+
+The database is SQLite (`bom_platform.db`, created on first start, gitignored). Roles, pages and demo users are seeded
+automatically on startup (see the demo accounts on the UI login page).
+
+Check it is up: `GET http://127.0.0.1:8001/health` returns `{"status":"healthy", ...}`.
+
+## Tests
+```powershell
+pytest -q
+```
+
+## Notes
+- `.env` is never committed. `.env.example` lists every setting. Leave `OPENAI_API_KEY` blank to use the rule-based explainer.
+- The API can also serve a built UI from `api/ui` (copy the UI's `dist/` there). That folder is not in git; if it is absent the API still starts and you run the UI separately.
+- Port: `run.py` uses 8001 (override with `PORT`). The Docker image listens on 8000.
 
 ## Key Endpoints
 
